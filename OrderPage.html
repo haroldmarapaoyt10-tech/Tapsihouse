@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HNK TapsiHouse - Order</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: #f0f2f5; color: #333; padding-bottom: 90px; }
+  
+  header {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: white; padding: 18px 16px; text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 40;
+  }
+  header h1 { font-size: 1.5rem; letter-spacing: 1px; }
+  header h1 span { color: #f1c40f; }
+  header p { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; font-style: italic; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+
+  .tabs { display: flex; background: white; border-radius: 10px; overflow: hidden;
+          margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer;
+         border: none; background: white; font-weight: 700; color: #666; font-size: 0.95rem; }
+  .tab.active { background: #e74c3c; color: white; }
+
+  .cat-header {
+    background: #2c3e50; color: white; padding: 8px 12px; border-radius: 8px;
+    margin-top: 16px; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px;
+  }
+  .cat-header:first-of-type { margin-top: 0; }
+
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+
+  .menu-card {
+    background: white; border-radius: 10px; padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; justify-content: space-between;
+    text-align: center; transition: transform 0.1s;
+  }
+  .menu-card:active { transform: scale(0.98); }
+  .menu-card h3 { font-size: 0.9rem; margin-bottom: 4px; color: #222; line-height: 1.2; }
+  .menu-card .price { color: #e74c3c; font-weight: 800; font-size: 1.05rem; margin-bottom: 10px; }
+  .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; }
+
+  .add-btn {
+    background: #e74c3c; color: white; border: none;
+    padding: 8px; border-radius: 6px; font-weight: 700;
+    font-size: 0.85rem; cursor: pointer; width: 100%;
+  }
+  .add-btn:active { background: #c0392b; }
+
+  .qty-controls-card {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #f8f9fa; border-radius: 6px; padding: 4px;
+  }
+  .qty-btn-small {
+    width: 32px; height: 32px; border-radius: 6px; border: none;
+    background: white; color: #e74c3c; font-size: 1.2rem; cursor: pointer;
+    font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-btn-small:active { background: #eee; }
+  .qty-display { font-weight: 800; font-size: 1rem; min-width: 20px; text-align: center; }
+
+  .cart-summary {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; padding: 14px 16px; 
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 600px; margin: 0 auto; z-index: 50;
+    border-top-left-radius: 16px; border-top-right-radius: 16px;
+  }
+  .cart-summary .total-info { display: flex; flex-direction: column; }
+  .cart-summary .total-label { font-size: 0.8rem; color: #666; }
+  .cart-summary .total-amount { font-size: 1.2rem; font-weight: 800; color: #e74c3c; }
+  .btn-checkout {
+    background: #27ae60; color: white; border: none;
+    padding: 12px 24px; border-radius: 8px; font-weight: 800;
+    cursor: pointer; font-size: 1rem;
+  }
+
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 100;
+    justify-content: center; align-items: flex-end; padding: 0;
+  }
+  @media (min-width: 600px) { .modal { align-items: center; padding: 16px; } }
+  .modal.active { display: flex; }
+  .modal-content {
+    background: white; border-radius: 16px 16px 0 0; padding: 20px;
+    width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @media (min-width: 600px) { .modal-content { border-radius: 16px; } }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .modal-content h2 { margin-bottom: 16px; color: #e74c3c; font-size: 1.3rem; text-align: center; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.9rem; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 12px; border: 2px solid #eee;
+    border-radius: 8px; font-size: 1rem; background: white;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: #e74c3c; outline: none; }
+
+  .order-list { background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .order-list-item { display: flex; justify-content: space-between; padding: 6px 0;
+                     border-bottom: 1px dashed #ddd; font-size: 0.9rem; }
+  .order-list-item:last-child { border-bottom: none; }
+  .order-total { font-weight: 800; font-size: 1.15rem; text-align: right; color: #e74c3c; margin-top: 8px; }
+
+  .chat-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .chat-btn { padding: 12px 8px; border: none; border-radius: 8px; color: white;
+              font-weight: 800; cursor: pointer; font-size: 0.85rem; }
+  .chat-messenger { background: #0084ff; }
+  .chat-whatsapp { background: #25d366; }
+  .chat-viber { background: #7360f2; }
+
+  .btn-close { background: #eee; color: #333; padding: 12px; border: none;
+               border-radius: 8px; width: 100%; margin-top: 12px; cursor: pointer; font-weight: 700; }
+
+  .info-note {
+    background: #fff3cd; border-left: 4px solid #f39c12;
+    padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;
+  }
+  
+  .admin-section {
+    background: white; border-radius: 10px; padding: 15px;
+    margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .admin-section h3 { color: #e74c3c; margin-bottom: 12px; font-size: 1.05rem; }
+  
+  .admin-order {
+    background: white; border-radius: 10px; padding: 14px;
+    margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .admin-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .admin-order-header h3 { font-size: 1rem; }
+  .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; color: white; }
+  .status-pending { background: #f39c12; }
+  .status-paid { background: #3498db; }
+  .status-cooking { background: #9b59b6; }
+  .status-ready { background: #27ae60; }
+  .status-done { background: #95a5a6; }
+  .admin-order-items { font-size: 0.85rem; color: #555; margin-bottom: 6px; }
+  .admin-order-meta { font-size: 0.75rem; color: #888; margin-bottom: 10px; }
+  .admin-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .admin-btn { padding: 8px 12px; border: none; border-radius: 6px;
+               font-size: 0.8rem; cursor: pointer; font-weight: 700; color: white; }
+  .admin-btn.pay { background: #3498db; }
+  .admin-btn.cook { background: #9b59b6; }
+  .admin-btn.ready { background: #27ae60; }
+  .admin-btn.done { background: #95a5a6; }
+  .admin-btn.clear { background: #e74c3c; margin-top: 10px; width: 100%; }
+  .admin-btn.delete { background: #e74c3c; padding: 4px 8px; font-size: 0.7rem; margin-left: 8px; }
+  
+  .custom-item-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px;
+  }
+  .custom-item-row span { font-size: 0.9rem; font-weight: 600; }
+  
+  .empty-state { text-align: center; padding: 40px 20px; color: #999; }
+  .chat-link-box { background: #f0f0f0; padding: 12px; border-radius: 8px;
+                   margin-top: 10px; font-size: 0.85rem; text-align: center; }
+  .chat-link-box a { color: #e74c3c; font-weight: 800; display: block; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍽️ <span>HNK</span> TAPSIHOUSE</h1>
+  <p>Eat • Enjoy • Come Again!</p>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('customer', this)">🛒 Mag-Order</button>
+    <button class="tab" onclick="switchTab('admin', this)">👨‍🍳 Admin</button>
+  </div>
+
+  <div id="customerView">
+    <div id="menuList"></div>
+  </div>
+
+  <div id="adminView" style="display:none;">
+    <!-- ADD MENU SECTION -->
+    <div class="admin-section">
+      <h3>➕ Magdagdag ng Bagong Menu</h3>
+      <div class="info-note" style="margin-bottom:12px; font-size:0.8rem;">
+        💡 Piliin ang category, ilagay ang pangalan at presyo. (Para sa Takoyaki na may sizes, i-edit muna sa code).
+      </div>
+      <div class="form-group">
+        <label>Category:</label>
+        <select id="addCategory">
+          <option value="Silog Meals">Silog Meals</option>
+          <option value="Mami at Soup">Mami at Soup</option>
+          <option value="Drinks">Drinks</option>
+          <option value="Extra">Extra</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Pangalan ng Item:</label>
+        <input type="text" id="addItemName" placeholder="e.g., Special Silog">
+      </div>
+      <div class="form-group">
+        <label>Presyo (₱):</label>
+        <input type="number" id="addItemPrice" placeholder="e.g., 100">
+      </div>
+      <button class="admin-btn ready" style="width:100%; padding:12px; font-size:1rem;" onclick="addMenuItem()">Idagdag sa Menu</button>
+    </div>
+
+    <!-- CUSTOM ITEMS LIST -->
+    <div class="admin-section" id="customItemsSection" style="display:none;">
+      <h3>📝 Mga Idinagdag na Menu</h3>
+      <div id="customItemsList"></div>
+    </div>
+
+    <!-- ORDERS LIST -->
+    <div class="admin-section">
+      <h3>📋 Order History</h3>
+      <button class="admin-btn clear" onclick="clearAllOrders()">🗑️ Burahin Lahat ng Orders</button>
+    </div>
+    <div id="adminOrders"></div>
+  </div>
+</div>
+
+<!-- FLOATING CART SUMMARY -->
+<div class="cart-summary" id="cartSummary" style="display:none;">
+  <div class="total-info">
+    <span class="total-label">Total Order:</span>
+    <span class="total-amount" id="cartTotal">₱0</span>
+  </div>
+  <button class="btn-checkout" onclick="openCheckout()">Checkout →</button>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-content">
+    <h2>📝 Checkout</h2>
+    <div class="form-group">
+      <label>Pangalan mo:</label>
+      <input type="text" id="customerName" placeholder="Juan Dela Cruz" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label>Ang iyong order:</label>
+      <div class="order-list" id="checkoutItems"></div>
+      <div class="order-total" id="checkoutTotal"></div>
+    </div>
+    <div class="form-group">
+      <label>I-send ang bayad sa:</label>
+      <div class="info-note" style="margin-top:8px; margin-bottom: 12px;">
+        💬 Magpapadala ka ng payment proof sa pinili mong chat. Hintayin mo ang confirmation ko bago lutuin ang order.
+      </div>
+      <div class="chat-options">
+        <button class="chat-btn chat-messenger" onclick="submitOrder('messenger')">Messenger</button>
+        <button class="chat-btn chat-whatsapp" onclick="submitOrder('whatsapp')">WhatsApp</button>
+        <button class="chat-btn chat-viber" onclick="submitOrder('viber')">Viber</button>
+      </div>
+    </div>
+    <button class="btn-close" onclick="closeModal('checkoutModal')">Kanselahin</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <div style="text-align:center; font-size: 3rem; margin-bottom: 10px;">✅</div>
+    <h2>Naitala na ang Order!</h2>
+    <p style="text-align:center; margin-bottom: 16px; color: #555;">
+      Order ID: <strong id="successOrderId" style="color:#e74c3c;"></strong>
+    </p>
+    <div class="chat-link-box" id="chatLinkBox"></div>
+    <div class="info-note" style="margin-top:14px;">
+      📱 Pagkatapos magbayad, maghintay ng reply ko sa chat para sa confirmation at update kung kailan ready for pickup.
+    </div>
+    <button class="btn-close" onclick="closeSuccess()">OK, Sige!</button>
+  </div>
+</div>
+
+<script>
+// ============ CONFIGURATION ============
+const CONFIG = {
+  messengerUsername: "100138359166251",
+  whatsappNumber: "639932429485",
+  viberNumber: "639932429485",
+};
+
+// ============ BASE MENU DATA (Updated Texts) ============
+const BASE_MENU = {
+  "Silog Meals": [
+    { id: "porksilog", name: "Porksilog", price: 90 },
+    { id: "chicksilog", name: "Chicksilog", price: 90 },
+    { id: "malingsilog", name: "Malingsilog (2pcs)", price: 90 },
+    { id: "tocinosilog", name: "Tocinosilog", price: 90 },
+    { id: "hotsilog", name: "Hotsilog (1pc TJ jumbo)", price: 70 },
+    { id: "siomaisilog", name: "Siomaisilog (3pcs big siomai)", price: 69 },
+    { id: "skinsilog", name: "Skinsilog (4pcs)", price: 90 },
+    { id: "longsilog", name: "Longsilog (3pcs)", price: 90 },
+    { id: "cornsilog", name: "Cornsilog", price: 90 },
+    { id: "tempurasilog", name: "Tempurasilog (2pcs)", price: 90 },
+    { id: "nuggetsilog", name: "Nuggetsilog (5pcs)", price: 90 },
+    { id: "shanghaisilog", name: "Shanghaisilog (6pcs)", price: 90 },
+  ],
+  "Mami at Soup": [
+    { id: "beefmami", name: "Beef Mami", price: 70 },
+    { id: "siomaimami", name: "Siomai mami with 3pcs big siomai", price: 70 },
+    { id: "siomaisoup", name: "Siomai soup with 4pcs big siomai", price: 65 },
+  ],
+  "Takoyaki": [
+    {
+      id: "specialcheesy", name: "Special Cheesy",
+      desc: "Octobits, cheese, cabbage, bonito, sauce and jap mayo",
+      sizes: [{ label: "12 pcs", price: 175 }, { label: "8 pcs", price: 145 }, { label: "5 pcs", price: 105 }]
+    },
+    {
+      id: "specialauthentic", name: "Special Authentic",
+      desc: "Octobits, cabbage, bonito, sauce and jap mayo",
+      sizes: [{ label: "12 pcs", price: 160 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 90 }]
+    },
+    {
+      id: "cheesymaru", name: "Cheesy Maru",
+      desc: "Cheese, cabbage, bonito, sauce and jap mayo",
+      sizes: [{ label: "12 pcs", price: 130 }, { label: "8 pcs", price: 110 }, { label: "5 pcs", price: 70 }]
+    },
+    {
+      id: "hamandcheese", name: "Ham and Cheese",
+      desc: "Cheese, ham, cabbage, bonito, sauce and jap mayo",
+      sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }]
+    },
+    {
+      id: "crabstick", name: "Crabstick",
+      desc: "Crabstick, cabbage, bonito, sauce and jap mayo",
+      sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }]
+    },
+  ],
+  "Drinks": [
+    { id: "coke", name: "Coke Mismo", price: 25 },
+    { id: "royal", name: "Royal Mismo", price: 25 },
+    { id: "mountaindew", name: "Mountain Dew Mismo", price: 25 },
+    { id: "sprite", name: "Sprite Mismo", price: 25 },
+  ],
+  "Extra": [
+    { id: "plainrice", name: "Plain Rice", price: 13 },
+    { id: "friedrice", name: "Fried Rice", price: 18 },
+    { id: "egg", name: "Egg", price: 15 },
+    { id: "siomaibig", name: "Siomai Big", price: 12 },
+    { id: "regularsiomai", name: "Regular Siomai", price: 6 },
+  ],
+};
+
+// ============ STATE ============
+let cart = {};
+let orders = JSON.parse(localStorage.getItem('hnk_orders') || '[]');
+let customMenu = JSON.parse(localStorage.getItem('hnk_custom_menu') || '{}');
+
+// Merge Base + Custom Menu
+function getFullMenu() {
+  let fullMenu = JSON.parse(JSON.stringify(BASE_MENU));
+  for (const cat in customMenu) {
+    if (!fullMenu[cat]) fullMenu[cat] = [];
+    fullMenu[cat] = fullMenu[cat].concat(customMenu[cat]);
+  }
+  return fullMenu;
+}
+
+// ============ RENDER MENU ============
+function renderMenu() {
+  const MENU = getFullMenu();
+  const list = document.getElementById('menuList');
+  let html = '';
+
+  for (const [category, items] of Object.entries(MENU)) {
+    html += `<div class="cat-header">${category}</div>`;
+    html += `<div class="menu-grid">`;
+
+    items.forEach(item => {
+      if (item.sizes) {
+        html += `<div class="menu-card" style="grid-column: span 2; text-align: left;">
+          <h3>${item.name}</h3>
+          <div class="desc">${item.desc}</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">`;
+
+        item.sizes.forEach(size => {
+          const key = `${item.id}_${size.label}`;
+          const qty = cart[key]?.qty || 0;
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 8px 12px; border-radius: 8px;">
+            <span style="font-size: 0.85rem; font-weight: 600;">${size.label} <span style="color:#e74c3c; font-weight:800;">₱${size.price}</span></span>
+            ${qty === 0
+              ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.8rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add</button>`
+              : `<div class="qty-controls-card">
+                  <button class="qty-btn-small" onclick="changeQty('${key}', -1)">−</button>
+                  <span class="qty-display">${qty}</span>
+                  <button class="qty-btn-small" style="background:#e74c3c; color:white;" onclick="changeQty('${key}', 1)">+</button>
+                 </div>`
+            }
+          </div>`;
+        });
+
+        html += `</div></div>`;
+      } else {
+        const qty = cart[item.id]?.qty || 0;
+        html += `<div class="menu-card">
+          <h3>${item.name}</h3>
+          <div class="price">₱${item.price}</div>
+          ${qty === 0
+            ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add to Cart</button>`
+            : `<div class="qty-controls-card">
+                <button class="qty-btn-small" onclick="changeQty('${item.id}', -1)">−</button>
+                <span class="qty-display">${qty}</span>
+                <button class="qty-btn-small" style="background:#e74c3c; color:white;" onclick="changeQty('${item.id}', 1)">+</button>
+               </div>`
+          }
+        </div>`;
+      }
+    });
+
+    html += `</div>`;
+  }
+
+  list.innerHTML = html;
+  updateCartSummary();
+}
+
+function addToCart(key, name, price) {
+  if (!cart[key]) cart[key] = { name, price, qty: 1 };
+  else cart[key].qty++;
+  renderMenu();
+}
+
+function changeQty(key, delta) {
+  if (!cart[key]) return;
+  cart[key].qty += delta;
+  if (cart[key].qty <= 0) delete cart[key];
+  renderMenu();
+}
+
+function updateCartSummary() {
+  const total = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const summary = document.getElementById('cartSummary');
+  if (total > 0) {
+    summary.style.display = 'flex';
+    document.getElementById('cartTotal').textContent = '₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
+  } else {
+    summary.style.display = 'none';
+  }
+}
+
+// ============ CHECKOUT ============
+function openCheckout() {
+  const itemsDiv = document.getElementById('checkoutItems');
+  let total = 0;
+  itemsDiv.innerHTML = Object.entries(cart).map(([key, item]) => {
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+    return `<div class="order-list-item">
+      <span>${item.name} × ${item.qty}</span>
+      <span>₱${subtotal.toLocaleString('en-PH', {minimumFractionDigits: 2})}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('checkoutTotal').textContent = 'Total: ₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
+  document.getElementById('checkoutModal').classList.add('active');
+}
+
+function submitOrder(platform) {
+  const name = document.getElementById('customerName').value.trim();
+  if (!name) { alert('Pakilagay ang iyong pangalan!'); return; }
+
+  const items = Object.entries(cart).map(([key, item]) => ({
+    name: item.name, price: item.price, qty: item.qty, subtotal: item.price * item.qty
+  }));
+  const total = items.reduce((s, i) => s + i.subtotal, 0);
+
+  const order = {
+    id: 'HNK-' + Date.now().toString().slice(-6),
+    name, items, total, platform,
+    status: 'pending',
+    timestamp: new Date().toISOString()
+  };
+  orders.push(order);
+  localStorage.setItem('hnk_orders', JSON.stringify(orders));
+
+  const message = buildChatMessage(order);
+  const link = getChatLink(platform, message);
+
+  document.getElementById('successOrderId').textContent = order.id;
+  document.getElementById('chatLinkBox').innerHTML =
+    `<strong>${platform.toUpperCase()}</strong><br>
+     <a href="${link}" target="_blank">👉 I-click dito para mag-chat at magbayad</a>
+     <small style="color:#666; display:block; margin-top:6px;">Order ID: ${order.id} | Total: ₱${total.toFixed(2)}</small>`;
+
+  closeModal('checkoutModal');
+  document.getElementById('successModal').classList.add('active');
+
+  cart = {};
+  document.getElementById('customerName').value = '';
+  renderMenu();
+}
+
+function buildChatMessage(order) {
+  let msg = `🍽️ BAGONG ORDER - HNK TAPSIHOUSE\n━━━━━━━━━━━━━━━━━━\n`;
+  msg += `Order ID: ${order.id}\nPangalan: ${order.name}\n━━━━━━━━━━━━━━━━━━\n\nMga Item:\n`;
+  order.items.forEach(i => { msg += `• ${i.name} × ${i.qty} = ₱${i.subtotal.toFixed(2)}\n`; });
+  msg += `\n💰 TOTAL: ₱${order.total.toFixed(2)}\n\nMagpapadala ako ng proof of payment. Paki-confirm po pag natanggap na. Salamat! 😊`;
+  return msg;
+}
+
+function getChatLink(platform, message) {
+  const encoded = encodeURIComponent(message);
+  if (platform === 'messenger') return `https://m.me/${CONFIG.messengerUsername}`;
+  if (platform === 'whatsapp') return `https://wa.me/${CONFIG.whatsappNumber}?text=${encoded}`;
+  if (platform === 'viber') return `viber://chat?number=${CONFIG.viberNumber}`;
+  return '#';
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function closeSuccess() { closeModal('successModal'); }
+
+// ============ ADMIN FUNCTIONS ============
+function addMenuItem() {
+  const cat = document.getElementById('addCategory').value;
+  const name = document.getElementById('addItemName').value.trim();
+  const price = parseFloat(document.getElementById('addItemPrice').value);
+
+  if (!name || !price) { alert('Pakipunan ang pangalan at presyo!'); return; }
+
+  const id = 'custom_' + Date.now();
+  if (!customMenu[cat]) customMenu[cat] = [];
+  customMenu[cat].push({ id, name, price });
+  
+  localStorage.setItem('hnk_custom_menu', JSON.stringify(customMenu));
+  
+  document.getElementById('addItemName').value = '';
+  document.getElementById('addItemPrice').value = '';
+  
+  renderAdmin();
+  renderMenu();
+}
+
+function deleteCustomItem(cat, id) {
+  if (!confirm('Burahin ang item na ito sa menu?')) return;
+  customMenu[cat] = customMenu[cat].filter(item => item.id !== id);
+  if (customMenu[cat].length === 0) delete customMenu[cat];
+  
+  localStorage.setItem('hnk_custom_menu', JSON.stringify(customMenu));
+  renderAdmin();
+  renderMenu();
+}
+
+function renderAdminCustomItems() {
+  const section = document.getElementById('customItemsSection');
+  const list = document.getElementById('customItemsList');
+  let html = '';
+  let hasItems = false;
+
+  for (const [cat, items] of Object.entries(customMenu)) {
+    items.forEach(item => {
+      hasItems = true;
+      html += `<div class="custom-item-row">
+        <span>${cat}: ${item.name} (₱${item.price})</span>
+        <button class="admin-btn delete" onclick="deleteCustomItem('${cat}', '${item.id}')">Burahin</button>
+      </div>`;
+    });
+  }
+
+  if (hasItems) {
+    section.style.display = 'block';
+    list.innerHTML = html;
+  } else {
+    section.style.display = 'none';
+  }
+}
+
+function renderAdmin() {
+  renderAdminCustomItems();
+  
+  const container = document.getElementById('adminOrders');
+  if (orders.length === 0) {
+    container.innerHTML = '<div class="empty-state">Wala pang orders.</div>';
+    return;
+  }
+  const sorted = [...orders].reverse();
+  container.innerHTML = sorted.map(o => {
+    const statusLabels = { pending: 'HINTAY BAYAD', paid: 'NABAYAD NA', cooking: 'NILULUTO', ready: 'READY NA!', done: 'TAPOS NA' };
+    const itemsText = o.items.map(i => `${i.name} ×${i.qty}`).join(', ');
+    const time = new Date(o.timestamp).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `
+      <div class="admin-order">
+        <div class="admin-order-header">
+          <h3>${o.name} <small style="color:#888;font-weight:normal;">(${o.id})</small></h3>
+          <span class="status-badge status-${o.status}">${statusLabels[o.status]}</span>
+        </div>
+        <div class="admin-order-items">${itemsText}</div>
+        <div class="admin-order-meta">
+          💰 Total: ₱${o.total.toFixed(2)} | 📱 ${o.platform.toUpperCase()} | 🕐 ${time}
+        </div>
+        <div class="admin-actions">
+          ${o.status === 'pending' ? `<button class="admin-btn pay" onclick="updateStatus('${o.id}','paid')">✓ Natanggap Bayad</button>` : ''}
+          ${o.status === 'paid' ? `<button class="admin-btn cook" onclick="updateStatus('${o.id}','cooking')">🍳 Luluto Na</button>` : ''}
+          ${o.status === 'cooking' ? `<button class="admin-btn ready" onclick="updateStatus('${o.id}','ready')">✅ Ready for Pickup</button>` : ''}
+          ${o.status === 'ready' ? `<button class="admin-btn done" onclick="updateStatus('${o.id}','done')">🎉 Na-pickup Na</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateStatus(id, newStatus) {
+  const order = orders.find(o => o.id === id);
+  if (order) {
+    order.status = newStatus;
+    localStorage.setItem('hnk_orders', JSON.stringify(orders));
+    renderAdmin();
+  }
+}
+
+function clearAllOrders() {
+  if (confirm('Sigurado ka bang burahin lahat ng order history?')) {
+    orders = [];
+    localStorage.setItem('hnk_orders', JSON.stringify(orders));
+    renderAdmin();
+  }
+}
+
+// ============ TABS ============
+function switchTab(view, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if (view === 'customer') {
+    document.getElementById('customerView').style.display = 'block';
+    document.getElementById('adminView').style.display = 'none';
+    document.getElementById('cartSummary').style.display = Object.keys(cart).length > 0 ? 'flex' : 'none';
+  } else {
+    document.getElementById('customerView').style.display = 'none';
+    document.getElementById('adminView').style.display = 'block';
+    document.getElementById('cartSummary').style.display = 'none';
+    renderAdmin();
+  }
+}
+
+// ============ INIT ============
+renderMenu();
+</script>
+</body>
+</html>
