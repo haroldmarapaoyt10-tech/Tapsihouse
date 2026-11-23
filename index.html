@@ -4,123 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HNK TapsiHouse - Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #f0f2f5; color: #333; padding-bottom: 90px; }
-  
-  header {
-    background: linear-gradient(135deg, #c0392b, #e74c3c);
-    color: white; padding: 18px 16px; text-align: center;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 40;
+  :root {
+    --mcdo-red: #DA291C;
+    --mcdo-yellow: #FFC72C;
+    --mcdo-dark: #292929;
+    --mcdo-bg: #F4F4F4;
+    --mcdo-white: #FFFFFF;
+    --mcdo-grey: #EAEAEA;
   }
-  header h1 { font-size: 1.5rem; letter-spacing: 1px; }
-  header h1 span { color: #f1c40f; }
-  header p { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; font-style: italic; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--mcdo-bg); color: var(--mcdo-dark); padding-bottom: 100px; }
+  
+  /* HEADER */
+  header {
+    background: var(--mcdo-white);
+    padding: 16px; text-align: center;
+    border-bottom: 4px solid var(--mcdo-yellow);
+    position: sticky; top: 0; z-index: 40;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  header h1 { font-size: 1.6rem; font-weight: 900; color: var(--mcdo-red); letter-spacing: -0.5px; }
+  header h1 span { color: var(--mcdo-dark); }
+  header p { font-size: 0.75rem; font-weight: 700; color: #666; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
-  .cat-header {
-    background: #2c3e50; color: white; padding: 8px 12px; border-radius: 8px;
-    margin-top: 16px; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px;
+  /* CATEGORY NAVIGATION (Kiosk Style) */
+  .category-nav {
+    display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 12px 0;
+    scrollbar-width: none; /* Firefox */
   }
-  .cat-header:first-of-type { margin-top: 0; }
+  .category-nav::-webkit-scrollbar { display: none; }
+  
+  .cat-pill {
+    flex: 0 0 auto; padding: 10px 20px; border-radius: 50px;
+    background: var(--mcdo-white); border: 2px solid var(--mcdo-grey);
+    font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark);
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .cat-pill.active {
+    background: var(--mcdo-red); color: white; border-color: var(--mcdo-red);
+    box-shadow: 0 4px 10px rgba(218, 41, 28, 0.3);
+  }
 
-  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .cat-header {
+    background: var(--mcdo-dark); color: white; padding: 10px 16px; border-radius: 12px;
+    margin-top: 20px; font-weight: 900; font-size: 1.1rem; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cat-header::before { content: ''; width: 6px; height: 24px; background: var(--mcdo-yellow); border-radius: 4px; }
+
+  /* MENU GRID */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 
   .menu-card {
-    background: white; border-radius: 10px; padding: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    background: var(--mcdo-white); border-radius: 16px; padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--mcdo-grey);
     display: flex; flex-direction: column; justify-content: space-between;
-    text-align: center; transition: transform 0.1s;
+    text-align: center; transition: transform 0.1s; min-height: 130px;
   }
-  .menu-card:active { transform: scale(0.98); }
-  .menu-card h3 { font-size: 0.9rem; margin-bottom: 4px; color: #222; line-height: 1.2; }
-  .menu-card .price { color: #e74c3c; font-weight: 800; font-size: 1.05rem; margin-bottom: 10px; }
-  .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; }
+  .menu-card:active { transform: scale(0.97); }
+  .menu-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 4px; color: var(--mcdo-dark); line-height: 1.2; }
+  .menu-card .price { color: var(--mcdo-red); font-weight: 900; font-size: 1.15rem; margin-bottom: 12px; }
+  .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; font-weight: 600;}
 
+  /* BUTTONS */
   .add-btn {
-    background: #e74c3c; color: white; border: none;
-    padding: 8px; border-radius: 6px; font-weight: 700;
-    font-size: 0.85rem; cursor: pointer; width: 100%;
+    background: var(--mcdo-yellow); color: var(--mcdo-dark); border: none;
+    padding: 10px; border-radius: 50px; font-weight: 900;
+    font-size: 0.9rem; cursor: pointer; width: 100%; text-transform: uppercase;
+    box-shadow: 0 4px 0 #E6B025; transition: all 0.1s;
   }
-  .add-btn:active { background: #c0392b; }
+  .add-btn:active { transform: translateY(4px); box-shadow: none; }
 
   .qty-controls-card {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    background: #f8f9fa; border-radius: 6px; padding: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: var(--mcdo-grey); border-radius: 50px; padding: 4px;
   }
   .qty-btn-small {
-    width: 32px; height: 32px; border-radius: 6px; border: none;
-    background: white; color: #e74c3c; font-size: 1.2rem; cursor: pointer;
-    font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    width: 36px; height: 36px; border-radius: 50%; border: none;
+    background: var(--mcdo-white); color: var(--mcdo-red); font-size: 1.4rem; cursor: pointer;
+    font-weight: 900; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     display: flex; align-items: center; justify-content: center;
   }
-  .qty-btn-small:active { background: #eee; }
-  .qty-display { font-weight: 800; font-size: 1rem; min-width: 20px; text-align: center; }
+  .qty-btn-small:active { background: #ddd; }
+  .qty-btn-small.plus { background: var(--mcdo-red); color: white; }
+  .qty-display { font-weight: 900; font-size: 1.1rem; min-width: 20px; text-align: center; }
 
+  /* BOTTOM CART BAR (Kiosk Style) */
   .cart-summary {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white; padding: 14px 16px; 
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    position: fixed; bottom: 16px; left: 16px; right: 16px;
+    background: var(--mcdo-dark); padding: 12px 16px; 
+    border-radius: 16px;
     display: flex; justify-content: space-between; align-items: center;
-    max-width: 600px; margin: 0 auto; z-index: 50;
-    border-top-left-radius: 16px; border-top-right-radius: 16px;
+    max-width: 568px; margin: 0 auto; z-index: 50;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   }
-  .cart-summary .total-info { display: flex; flex-direction: column; }
-  .cart-summary .total-label { font-size: 0.8rem; color: #666; }
-  .cart-summary .total-amount { font-size: 1.2rem; font-weight: 800; color: #e74c3c; }
+  .cart-summary .total-info { display: flex; flex-direction: column; color: white; }
+  .cart-summary .total-label { font-size: 0.75rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; }
+  .cart-summary .total-amount { font-size: 1.3rem; font-weight: 900; color: var(--mcdo-yellow); }
   .btn-checkout {
-    background: #27ae60; color: white; border: none;
-    padding: 12px 24px; border-radius: 8px; font-weight: 800;
-    cursor: pointer; font-size: 1rem;
+    background: var(--mcdo-yellow); color: var(--mcdo-dark); border: none;
+    padding: 12px 24px; border-radius: 50px; font-weight: 900;
+    cursor: pointer; font-size: 1rem; text-transform: uppercase;
+    box-shadow: 0 4px 0 #E6B025;
   }
+  .btn-checkout:active { transform: translateY(4px); box-shadow: none; }
 
+  /* MODALS */
   .modal {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6); z-index: 100;
+    background: rgba(0,0,0,0.7); z-index: 100;
     justify-content: center; align-items: flex-end; padding: 0;
   }
   @media (min-width: 600px) { .modal { align-items: center; padding: 16px; } }
   .modal.active { display: flex; }
   .modal-content {
-    background: white; border-radius: 16px 16px 0 0; padding: 20px;
+    background: var(--mcdo-white); border-radius: 24px 24px 0 0; padding: 24px;
     width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto;
-    animation: slideUp 0.3s ease;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  @media (min-width: 600px) { .modal-content { border-radius: 16px; } }
+  @media (min-width: 600px) { .modal-content { border-radius: 24px; } }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-  .modal-content h2 { margin-bottom: 16px; color: #e74c3c; font-size: 1.3rem; text-align: center; }
+  .modal-content h2 { margin-bottom: 20px; color: var(--mcdo-dark); font-size: 1.5rem; text-align: center; font-weight: 900; }
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.9rem; }
+  .form-group label { display: block; margin-bottom: 8px; font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark); }
   .form-group input {
-    width: 100%; padding: 12px; border: 2px solid #eee;
-    border-radius: 8px; font-size: 1rem;
+    width: 100%; padding: 14px; border: 2px solid var(--mcdo-grey);
+    border-radius: 12px; font-size: 1rem; font-weight: 600; background: var(--mcdo-bg);
   }
-  .form-group input:focus { border-color: #e74c3c; outline: none; }
+  .form-group input:focus { border-color: var(--mcdo-red); outline: none; background: white; }
 
-  .order-list { background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
-  .order-list-item { display: flex; justify-content: space-between; padding: 6px 0;
-                     border-bottom: 1px dashed #ddd; font-size: 0.9rem; }
+  .order-list { background: var(--mcdo-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .order-list-item { display: flex; justify-content: space-between; padding: 8px 0;
+                     border-bottom: 1px dashed #ccc; font-size: 0.95rem; font-weight: 700; }
   .order-list-item:last-child { border-bottom: none; }
-  .order-total { font-weight: 800; font-size: 1.15rem; text-align: right; color: #e74c3c; margin-top: 8px; }
+  .order-total { font-weight: 900; font-size: 1.25rem; text-align: right; color: var(--mcdo-red); margin-top: 12px; }
 
-  .chat-options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-  .chat-btn { padding: 14px 8px; border: none; border-radius: 8px; color: white;
-              font-weight: 800; cursor: pointer; font-size: 1rem; width: 100%; }
-  .chat-whatsapp { background: #25d366; }
+  .chat-options { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .chat-btn { padding: 16px 8px; border: none; border-radius: 50px; color: white;
+              font-weight: 900; cursor: pointer; font-size: 1.1rem; width: 100%; text-transform: uppercase;
+              box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: all 0.1s; }
+  .chat-btn:active { transform: translateY(4px); box-shadow: none; }
+  .chat-whatsapp { background: #25D366; }
 
-  .btn-close { background: #eee; color: #333; padding: 12px; border: none;
-               border-radius: 8px; width: 100%; margin-top: 12px; cursor: pointer; font-weight: 700; }
+  .btn-close { background: var(--mcdo-grey); color: var(--mcdo-dark); padding: 14px; border: none;
+               border-radius: 50px; width: 100%; margin-top: 16px; cursor: pointer; font-weight: 800; font-size: 1rem; }
 
   .info-note {
-    background: #fff3cd; border-left: 4px solid #f39c12;
-    padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;
+    background: #FFF8E1; border-left: 4px solid var(--mcdo-yellow);
+    padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; font-weight: 600; color: #555;
   }
   
-  .chat-link-box { background: #f0f0f0; padding: 12px; border-radius: 8px;
-                   margin-top: 10px; font-size: 0.85rem; text-align: center; }
-  .chat-link-box a { color: #25d366; font-weight: 800; display: block; margin-top: 6px; text-decoration: none; }
+  .chat-link-box { background: var(--mcdo-bg); padding: 16px; border-radius: 12px;
+                   margin-top: 10px; font-size: 0.9rem; text-align: center; }
+  .chat-link-box a { color: #25D366; font-weight: 900; display: block; margin-top: 8px; text-decoration: none; font-size: 1.05rem; }
 </style>
 </head>
 <body>
@@ -131,16 +173,21 @@
 </header>
 
 <div class="container">
+  <!-- KIOSK STYLE CATEGORY NAV -->
+  <div class="category-nav" id="categoryNav">
+    <!-- Populated by JS -->
+  </div>
+
   <div id="menuList"></div>
 </div>
 
-<!-- FLOATING CART SUMMARY -->
+<!-- FLOATING BOTTOM CART BAR -->
 <div class="cart-summary" id="cartSummary" style="display:none;">
   <div class="total-info">
-    <span class="total-label">Total Order:</span>
+    <span class="total-label">My Order</span>
     <span class="total-amount" id="cartTotal">₱0</span>
   </div>
-  <button class="btn-checkout" onclick="openCheckout()">Checkout →</button>
+  <button class="btn-checkout" onclick="openCheckout()">View Order</button>
 </div>
 
 <!-- CHECKOUT MODAL -->
@@ -165,20 +212,20 @@
         <button class="chat-btn chat-whatsapp" onclick="submitOrder('whatsapp')">💬 Order via WhatsApp</button>
       </div>
     </div>
-    <button class="btn-close" onclick="closeModal('checkoutModal')">Kanselahin</button>
+    <button class="btn-close" onclick="closeModal('checkoutModal')">Bumalik sa Menu</button>
   </div>
 </div>
 
 <!-- SUCCESS MODAL -->
 <div class="modal" id="successModal">
   <div class="modal-content">
-    <div style="text-align:center; font-size: 3rem; margin-bottom: 10px;">✅</div>
-    <h2>Naitala na ang Order!</h2>
-    <p style="text-align:center; margin-bottom: 16px; color: #555;">
+    <div style="text-align:center; font-size: 4rem; margin-bottom: 10px;">✅</div>
+    <h2>Order Received!</h2>
+    <p style="text-align:center; margin-bottom: 20px; color: #555; font-weight: 700;">
       I-click ang link sa ibaba para i-send ang order details at proof of payment.
     </p>
     <div class="chat-link-box" id="chatLinkBox"></div>
-    <div class="info-note" style="margin-top:14px;">
+    <div class="info-note" style="margin-top:16px;">
       📱 Hintayin ang reply namin sa chat para sa confirmation at update kung kailan ready for pickup. Salamat!
     </div>
     <button class="btn-close" onclick="closeSuccess()">OK, Sige!</button>
@@ -188,7 +235,7 @@
 <script>
 // ============ CONFIGURATION ============
 const CONFIG = {
-  whatsappNumber: "639932429485",      // 👈 Palitan ng number mo (e.g., 639171234567)
+  whatsappNumber: "639XXXXXXXXX",      // 👈 Palitan ng number mo (e.g., 639171234567)
 };
 
 // ============ MENU DATA ============
@@ -257,18 +304,47 @@ const MENU = {
 // ============ STATE ============
 let cart = {}; 
 
+// ============ RENDER CATEGORY NAV ============
+function renderCategoryNav() {
+  const nav = document.getElementById('categoryNav');
+  let html = `<button class="cat-pill active" onclick="scrollToCategory('all', this)">All</button>`;
+  for (const category of Object.keys(MENU)) {
+    html += `<button class="cat-pill" onclick="scrollToCategory('${category}', this)">${category}</button>`;
+  }
+  nav.innerHTML = html;
+}
+
+function scrollToCategory(category, btn) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  
+  if (category === 'all') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const headers = document.querySelectorAll('.cat-header');
+  for (const header of headers) {
+    if (header.textContent.trim() === category) {
+      const y = header.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      break;
+    }
+  }
+}
+
 // ============ RENDER MENU ============
 function renderMenu() {
   const list = document.getElementById('menuList');
   let html = '';
 
   for (const [category, items] of Object.entries(MENU)) {
-    html += `<div class="cat-header">${category}</div>`;
+    html += `<div class="cat-header" id="cat-${category.replace(/\s+/g, '')}">${category}</div>`;
     html += `<div class="menu-grid">`;
 
     items.forEach(item => {
       if (item.sizes) {
-        html += `<div class="menu-card" style="grid-column: span 2; text-align: left;">
+        html += `<div class="menu-card" style="grid-column: span 2; text-align: left; min-height: auto;">
           <h3>${item.name}</h3>
           <div class="desc">${item.desc}</div>
           <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">`;
@@ -276,14 +352,14 @@ function renderMenu() {
         item.sizes.forEach(size => {
           const key = `${item.id}_${size.label}`;
           const qty = cart[key]?.qty || 0;
-          html += `<div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 8px 12px; border-radius: 8px;">
-            <span style="font-size: 0.85rem; font-weight: 600;">${size.label} <span style="color:#e74c3c; font-weight:800;">₱${size.price}</span></span>
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; background: var(--mcdo-bg); padding: 8px 12px; border-radius: 12px;">
+            <span style="font-size: 0.9rem; font-weight: 800;">${size.label} <span style="color:var(--mcdo-red);">₱${size.price}</span></span>
             ${qty === 0
               ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.8rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add</button>`
               : `<div class="qty-controls-card">
                   <button class="qty-btn-small" onclick="changeQty('${key}', -1)">−</button>
                   <span class="qty-display">${qty}</span>
-                  <button class="qty-btn-small" style="background:#e74c3c; color:white;" onclick="changeQty('${key}', 1)">+</button>
+                  <button class="qty-btn-small plus" onclick="changeQty('${key}', 1)">+</button>
                  </div>`
             }
           </div>`;
@@ -296,11 +372,11 @@ function renderMenu() {
           <h3>${item.name}</h3>
           <div class="price">₱${item.price}</div>
           ${qty === 0
-            ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add to Cart</button>`
+            ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add</button>`
             : `<div class="qty-controls-card">
                 <button class="qty-btn-small" onclick="changeQty('${item.id}', -1)">−</button>
                 <span class="qty-display">${qty}</span>
-                <button class="qty-btn-small" style="background:#e74c3c; color:white;" onclick="changeQty('${item.id}', 1)">+</button>
+                <button class="qty-btn-small plus" onclick="changeQty('${item.id}', 1)">+</button>
                </div>`
           }
         </div>`;
@@ -399,6 +475,7 @@ function closeModal(id) { document.getElementById(id).classList.remove('active')
 function closeSuccess() { closeModal('successModal'); }
 
 // ============ INIT ============
+renderCategoryNav();
 renderMenu();
 </script>
 </body>
