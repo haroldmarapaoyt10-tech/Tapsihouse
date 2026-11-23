@@ -120,10 +120,9 @@
     padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;
   }
   
-  .empty-state { text-align: center; padding: 40px 20px; color: #999; }
+  .success-icon { text-align:center; font-size: 3rem; margin-bottom: 10px; }
   .chat-link-box { background: #f0f0f0; padding: 12px; border-radius: 8px;
                    margin-top: 10px; font-size: 0.85rem; text-align: center; }
-  .chat-link-box a { color: #e74c3c; font-weight: 800; display: block; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -160,9 +159,9 @@
       <div class="order-total" id="checkoutTotal"></div>
     </div>
     <div class="form-group">
-      <label>I-send ang bayad sa:</label>
+      <label>Pumili kung saan mo ipapadala ang order:</label>
       <div class="info-note" style="margin-top:8px; margin-bottom: 12px;">
-        💬 Magpapadala ka ng payment proof sa pinili mong chat. Dito na rin tayo mag-uusap kung kailan ready for pickup.
+        💬 Automatic na lalabas ang chat app na may nakasulat na ang order mo. I-tap mo na lang ang <b>Send</b> sa chat.
       </div>
       <div class="chat-options">
         <button class="chat-btn chat-messenger" onclick="submitOrder('messenger')">Messenger</button>
@@ -177,14 +176,13 @@
 <!-- SUCCESS MODAL -->
 <div class="modal" id="successModal">
   <div class="modal-content">
-    <div style="text-align:center; font-size: 3rem; margin-bottom: 10px;">✅</div>
-    <h2>Naitala na ang Order!</h2>
-    <p style="text-align:center; margin-bottom: 16px; color: #555;">
-      I-click ang link sa ibaba para i-send ang order details at proof of payment.
+    <div class="success-icon">✅</div>
+    <h2>Nabuksan na ang Chat!</h2>
+    <p style="text-align:center; margin-bottom: 16px; color: #555; font-size: 0.95rem;">
+      Naka-type na ang order details mo. <br><b>I-tap mo na lang ang "Send" (Paper Plane) sa chat app.</b>
     </p>
-    <div class="chat-link-box" id="chatLinkBox"></div>
-    <div class="info-note" style="margin-top:14px;">
-      📱 Hintayin ang reply namin sa chat para sa confirmation at update kung kailan ready for pickup. Salamat!
+    <div class="info-note" style="margin-top:14px; text-align:center;">
+      📱 Hintayin ang reply namin sa chat para sa payment confirmation at pickup update. Salamat!
     </div>
     <button class="btn-close" onclick="closeSuccess()">OK, Sige!</button>
   </div>
@@ -195,7 +193,7 @@
 const CONFIG = {
   messengerUsername: "hnktakoyaki",       // 👈 Palitan ng FB page username mo
   whatsappNumber: "639932429485",      // 👈 Palitan ng number mo
-  viberNumber: "639932429485",         // 👈 Palitan ng number mo
+  viberNumber: "639XXXXXXXXX",         // 👈 Palitan ng number mo
 };
 
 // ============ MENU DATA ============
@@ -373,14 +371,14 @@ function submitOrder(platform) {
   const message = buildChatMessage(name, items, total);
   const link = getChatLink(platform, message);
 
-  document.getElementById('chatLinkBox').innerHTML =
-    `<strong>${platform.toUpperCase()}</strong><br>
-     <a href="${link}" target="_blank">👉 I-click dito para mag-chat at magbayad</a>
-     <small style="color:#666; display:block; margin-top:6px;">Total: ₱${total.toFixed(2)}</small>`;
+  // 🚀 AGAD-AGAD NA BUBUKSAN ANG CHAT APP
+  window.open(link, '_blank');
 
+  // Ipakita ang success modal
   closeModal('checkoutModal');
   document.getElementById('successModal').classList.add('active');
 
+  // Reset cart
   cart = {};
   document.getElementById('customerName').value = '';
   renderMenu();
