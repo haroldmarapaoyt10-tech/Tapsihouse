@@ -19,12 +19,6 @@
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
-  .tabs { display: flex; background: white; border-radius: 10px; overflow: hidden;
-          margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer;
-         border: none; background: white; font-weight: 700; color: #666; font-size: 0.95rem; }
-  .tab.active { background: #e74c3c; color: white; }
-
   .cat-header {
     background: #2c3e50; color: white; padding: 8px 12px; border-radius: 8px;
     margin-top: 16px; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px;
@@ -99,11 +93,11 @@
   .modal-content h2 { margin-bottom: 16px; color: #e74c3c; font-size: 1.3rem; text-align: center; }
   .form-group { margin-bottom: 16px; }
   .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.9rem; }
-  .form-group input, .form-group select {
+  .form-group input {
     width: 100%; padding: 12px; border: 2px solid #eee;
-    border-radius: 8px; font-size: 1rem; background: white;
+    border-radius: 8px; font-size: 1rem;
   }
-  .form-group input:focus, .form-group select:focus { border-color: #e74c3c; outline: none; }
+  .form-group input:focus { border-color: #e74c3c; outline: none; }
 
   .order-list { background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
   .order-list-item { display: flex; justify-content: space-between; padding: 6px 0;
@@ -126,42 +120,6 @@
     padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;
   }
   
-  .admin-section {
-    background: white; border-radius: 10px; padding: 15px;
-    margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .admin-section h3 { color: #e74c3c; margin-bottom: 12px; font-size: 1.05rem; }
-  
-  .admin-order {
-    background: white; border-radius: 10px; padding: 14px;
-    margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .admin-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .admin-order-header h3 { font-size: 1rem; }
-  .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; color: white; }
-  .status-pending { background: #f39c12; }
-  .status-paid { background: #3498db; }
-  .status-cooking { background: #9b59b6; }
-  .status-ready { background: #27ae60; }
-  .status-done { background: #95a5a6; }
-  .admin-order-items { font-size: 0.85rem; color: #555; margin-bottom: 6px; }
-  .admin-order-meta { font-size: 0.75rem; color: #888; margin-bottom: 10px; }
-  .admin-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .admin-btn { padding: 8px 12px; border: none; border-radius: 6px;
-               font-size: 0.8rem; cursor: pointer; font-weight: 700; color: white; }
-  .admin-btn.pay { background: #3498db; }
-  .admin-btn.cook { background: #9b59b6; }
-  .admin-btn.ready { background: #27ae60; }
-  .admin-btn.done { background: #95a5a6; }
-  .admin-btn.clear { background: #e74c3c; margin-top: 10px; width: 100%; }
-  .admin-btn.delete { background: #e74c3c; padding: 4px 8px; font-size: 0.7rem; margin-left: 8px; }
-  
-  .custom-item-row {
-    display: flex; justify-content: space-between; align-items: center;
-    background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px;
-  }
-  .custom-item-row span { font-size: 0.9rem; font-weight: 600; }
-  
   .empty-state { text-align: center; padding: 40px 20px; color: #999; }
   .chat-link-box { background: #f0f0f0; padding: 12px; border-radius: 8px;
                    margin-top: 10px; font-size: 0.85rem; text-align: center; }
@@ -176,55 +134,7 @@
 </header>
 
 <div class="container">
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('customer', this)">🛒 Mag-Order</button>
-    <button class="tab" onclick="switchTab('admin', this)">👨‍🍳 Admin</button>
-  </div>
-
-  <div id="customerView">
-    <div id="menuList"></div>
-  </div>
-
-  <div id="adminView" style="display:none;">
-    <!-- ADD MENU SECTION -->
-    <div class="admin-section">
-      <h3>➕ Magdagdag ng Bagong Menu</h3>
-      <div class="info-note" style="margin-bottom:12px; font-size:0.8rem;">
-        💡 Piliin ang category, ilagay ang pangalan at presyo. (Para sa Takoyaki na may sizes, i-edit muna sa code).
-      </div>
-      <div class="form-group">
-        <label>Category:</label>
-        <select id="addCategory">
-          <option value="Silog Meals">Silog Meals</option>
-          <option value="Mami at Soup">Mami at Soup</option>
-          <option value="Drinks">Drinks</option>
-          <option value="Extra">Extra</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Pangalan ng Item:</label>
-        <input type="text" id="addItemName" placeholder="e.g., Special Silog">
-      </div>
-      <div class="form-group">
-        <label>Presyo (₱):</label>
-        <input type="number" id="addItemPrice" placeholder="e.g., 100">
-      </div>
-      <button class="admin-btn ready" style="width:100%; padding:12px; font-size:1rem;" onclick="addMenuItem()">Idagdag sa Menu</button>
-    </div>
-
-    <!-- CUSTOM ITEMS LIST -->
-    <div class="admin-section" id="customItemsSection" style="display:none;">
-      <h3>📝 Mga Idinagdag na Menu</h3>
-      <div id="customItemsList"></div>
-    </div>
-
-    <!-- ORDERS LIST -->
-    <div class="admin-section">
-      <h3>📋 Order History</h3>
-      <button class="admin-btn clear" onclick="clearAllOrders()">🗑️ Burahin Lahat ng Orders</button>
-    </div>
-    <div id="adminOrders"></div>
-  </div>
+  <div id="menuList"></div>
 </div>
 
 <!-- FLOATING CART SUMMARY -->
@@ -252,7 +162,7 @@
     <div class="form-group">
       <label>I-send ang bayad sa:</label>
       <div class="info-note" style="margin-top:8px; margin-bottom: 12px;">
-        💬 Magpapadala ka ng payment proof sa pinili mong chat. Hintayin mo ang confirmation ko bago lutuin ang order.
+        💬 Magpapadala ka ng payment proof sa pinili mong chat. Dito na rin tayo mag-uusap kung kailan ready for pickup.
       </div>
       <div class="chat-options">
         <button class="chat-btn chat-messenger" onclick="submitOrder('messenger')">Messenger</button>
@@ -270,11 +180,11 @@
     <div style="text-align:center; font-size: 3rem; margin-bottom: 10px;">✅</div>
     <h2>Naitala na ang Order!</h2>
     <p style="text-align:center; margin-bottom: 16px; color: #555;">
-      Order ID: <strong id="successOrderId" style="color:#e74c3c;"></strong>
+      I-click ang link sa ibaba para i-send ang order details at proof of payment.
     </p>
     <div class="chat-link-box" id="chatLinkBox"></div>
     <div class="info-note" style="margin-top:14px;">
-      📱 Pagkatapos magbayad, maghintay ng reply ko sa chat para sa confirmation at update kung kailan ready for pickup.
+      📱 Hintayin ang reply namin sa chat para sa confirmation at update kung kailan ready for pickup. Salamat!
     </div>
     <button class="btn-close" onclick="closeSuccess()">OK, Sige!</button>
   </div>
@@ -283,13 +193,13 @@
 <script>
 // ============ CONFIGURATION ============
 const CONFIG = {
-  messengerUsername: "100138359166251",
-  whatsappNumber: "639932429485",
-  viberNumber: "639932429485",
+  messengerUsername: "yourpage",       // 👈 Palitan ng FB page username mo
+  whatsappNumber: "639XXXXXXXXX",      // 👈 Palitan ng number mo
+  viberNumber: "639XXXXXXXXX",         // 👈 Palitan ng number mo
 };
 
-// ============ BASE MENU DATA (Updated Texts) ============
-const BASE_MENU = {
+// ============ MENU DATA ============
+const MENU = {
   "Silog Meals": [
     { id: "porksilog", name: "Porksilog", price: 90 },
     { id: "chicksilog", name: "Chicksilog", price: 90 },
@@ -352,23 +262,10 @@ const BASE_MENU = {
 };
 
 // ============ STATE ============
-let cart = {};
-let orders = JSON.parse(localStorage.getItem('hnk_orders') || '[]');
-let customMenu = JSON.parse(localStorage.getItem('hnk_custom_menu') || '{}');
-
-// Merge Base + Custom Menu
-function getFullMenu() {
-  let fullMenu = JSON.parse(JSON.stringify(BASE_MENU));
-  for (const cat in customMenu) {
-    if (!fullMenu[cat]) fullMenu[cat] = [];
-    fullMenu[cat] = fullMenu[cat].concat(customMenu[cat]);
-  }
-  return fullMenu;
-}
+let cart = {}; 
 
 // ============ RENDER MENU ============
 function renderMenu() {
-  const MENU = getFullMenu();
   const list = document.getElementById('menuList');
   let html = '';
 
@@ -473,23 +370,13 @@ function submitOrder(platform) {
   }));
   const total = items.reduce((s, i) => s + i.subtotal, 0);
 
-  const order = {
-    id: 'HNK-' + Date.now().toString().slice(-6),
-    name, items, total, platform,
-    status: 'pending',
-    timestamp: new Date().toISOString()
-  };
-  orders.push(order);
-  localStorage.setItem('hnk_orders', JSON.stringify(orders));
-
-  const message = buildChatMessage(order);
+  const message = buildChatMessage(name, items, total);
   const link = getChatLink(platform, message);
 
-  document.getElementById('successOrderId').textContent = order.id;
   document.getElementById('chatLinkBox').innerHTML =
     `<strong>${platform.toUpperCase()}</strong><br>
      <a href="${link}" target="_blank">👉 I-click dito para mag-chat at magbayad</a>
-     <small style="color:#666; display:block; margin-top:6px;">Order ID: ${order.id} | Total: ₱${total.toFixed(2)}</small>`;
+     <small style="color:#666; display:block; margin-top:6px;">Total: ₱${total.toFixed(2)}</small>`;
 
   closeModal('checkoutModal');
   document.getElementById('successModal').classList.add('active');
@@ -499,11 +386,13 @@ function submitOrder(platform) {
   renderMenu();
 }
 
-function buildChatMessage(order) {
+function buildChatMessage(name, items, total) {
   let msg = `🍽️ BAGONG ORDER - HNK TAPSIHOUSE\n━━━━━━━━━━━━━━━━━━\n`;
-  msg += `Order ID: ${order.id}\nPangalan: ${order.name}\n━━━━━━━━━━━━━━━━━━\n\nMga Item:\n`;
-  order.items.forEach(i => { msg += `• ${i.name} × ${i.qty} = ₱${i.subtotal.toFixed(2)}\n`; });
-  msg += `\n💰 TOTAL: ₱${order.total.toFixed(2)}\n\nMagpapadala ako ng proof of payment. Paki-confirm po pag natanggap na. Salamat! 😊`;
+  msg += `Pangalan: ${name}\n━━━━━━━━━━━━━━━━━━\n\nMga Item:\n`;
+  items.forEach(i => {
+    msg += `• ${i.name} × ${i.qty} = ₱${i.subtotal.toFixed(2)}\n`;
+  });
+  msg += `\n💰 TOTAL: ₱${total.toFixed(2)}\n\nMagpapadala ako ng proof of payment. Paki-confirm po at sabihin kung kailan ready for pickup. Salamat! 😊`;
   return msg;
 }
 
@@ -517,128 +406,6 @@ function getChatLink(platform, message) {
 
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 function closeSuccess() { closeModal('successModal'); }
-
-// ============ ADMIN FUNCTIONS ============
-function addMenuItem() {
-  const cat = document.getElementById('addCategory').value;
-  const name = document.getElementById('addItemName').value.trim();
-  const price = parseFloat(document.getElementById('addItemPrice').value);
-
-  if (!name || !price) { alert('Pakipunan ang pangalan at presyo!'); return; }
-
-  const id = 'custom_' + Date.now();
-  if (!customMenu[cat]) customMenu[cat] = [];
-  customMenu[cat].push({ id, name, price });
-  
-  localStorage.setItem('hnk_custom_menu', JSON.stringify(customMenu));
-  
-  document.getElementById('addItemName').value = '';
-  document.getElementById('addItemPrice').value = '';
-  
-  renderAdmin();
-  renderMenu();
-}
-
-function deleteCustomItem(cat, id) {
-  if (!confirm('Burahin ang item na ito sa menu?')) return;
-  customMenu[cat] = customMenu[cat].filter(item => item.id !== id);
-  if (customMenu[cat].length === 0) delete customMenu[cat];
-  
-  localStorage.setItem('hnk_custom_menu', JSON.stringify(customMenu));
-  renderAdmin();
-  renderMenu();
-}
-
-function renderAdminCustomItems() {
-  const section = document.getElementById('customItemsSection');
-  const list = document.getElementById('customItemsList');
-  let html = '';
-  let hasItems = false;
-
-  for (const [cat, items] of Object.entries(customMenu)) {
-    items.forEach(item => {
-      hasItems = true;
-      html += `<div class="custom-item-row">
-        <span>${cat}: ${item.name} (₱${item.price})</span>
-        <button class="admin-btn delete" onclick="deleteCustomItem('${cat}', '${item.id}')">Burahin</button>
-      </div>`;
-    });
-  }
-
-  if (hasItems) {
-    section.style.display = 'block';
-    list.innerHTML = html;
-  } else {
-    section.style.display = 'none';
-  }
-}
-
-function renderAdmin() {
-  renderAdminCustomItems();
-  
-  const container = document.getElementById('adminOrders');
-  if (orders.length === 0) {
-    container.innerHTML = '<div class="empty-state">Wala pang orders.</div>';
-    return;
-  }
-  const sorted = [...orders].reverse();
-  container.innerHTML = sorted.map(o => {
-    const statusLabels = { pending: 'HINTAY BAYAD', paid: 'NABAYAD NA', cooking: 'NILULUTO', ready: 'READY NA!', done: 'TAPOS NA' };
-    const itemsText = o.items.map(i => `${i.name} ×${i.qty}`).join(', ');
-    const time = new Date(o.timestamp).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    return `
-      <div class="admin-order">
-        <div class="admin-order-header">
-          <h3>${o.name} <small style="color:#888;font-weight:normal;">(${o.id})</small></h3>
-          <span class="status-badge status-${o.status}">${statusLabels[o.status]}</span>
-        </div>
-        <div class="admin-order-items">${itemsText}</div>
-        <div class="admin-order-meta">
-          💰 Total: ₱${o.total.toFixed(2)} | 📱 ${o.platform.toUpperCase()} | 🕐 ${time}
-        </div>
-        <div class="admin-actions">
-          ${o.status === 'pending' ? `<button class="admin-btn pay" onclick="updateStatus('${o.id}','paid')">✓ Natanggap Bayad</button>` : ''}
-          ${o.status === 'paid' ? `<button class="admin-btn cook" onclick="updateStatus('${o.id}','cooking')">🍳 Luluto Na</button>` : ''}
-          ${o.status === 'cooking' ? `<button class="admin-btn ready" onclick="updateStatus('${o.id}','ready')">✅ Ready for Pickup</button>` : ''}
-          ${o.status === 'ready' ? `<button class="admin-btn done" onclick="updateStatus('${o.id}','done')">🎉 Na-pickup Na</button>` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function updateStatus(id, newStatus) {
-  const order = orders.find(o => o.id === id);
-  if (order) {
-    order.status = newStatus;
-    localStorage.setItem('hnk_orders', JSON.stringify(orders));
-    renderAdmin();
-  }
-}
-
-function clearAllOrders() {
-  if (confirm('Sigurado ka bang burahin lahat ng order history?')) {
-    orders = [];
-    localStorage.setItem('hnk_orders', JSON.stringify(orders));
-    renderAdmin();
-  }
-}
-
-// ============ TABS ============
-function switchTab(view, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  if (view === 'customer') {
-    document.getElementById('customerView').style.display = 'block';
-    document.getElementById('adminView').style.display = 'none';
-    document.getElementById('cartSummary').style.display = Object.keys(cart).length > 0 ? 'flex' : 'none';
-  } else {
-    document.getElementById('customerView').style.display = 'none';
-    document.getElementById('adminView').style.display = 'block';
-    document.getElementById('cartSummary').style.display = 'none';
-    renderAdmin();
-  }
-}
 
 // ============ INIT ============
 renderMenu();
