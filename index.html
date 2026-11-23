@@ -105,12 +105,10 @@
   .order-list-item:last-child { border-bottom: none; }
   .order-total { font-weight: 800; font-size: 1.15rem; text-align: right; color: #e74c3c; margin-top: 8px; }
 
-  .chat-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
-  .chat-btn { padding: 12px 8px; border: none; border-radius: 8px; color: white;
-              font-weight: 800; cursor: pointer; font-size: 0.85rem; }
-  .chat-messenger { background: #0084ff; }
+  .chat-options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .chat-btn { padding: 14px 8px; border: none; border-radius: 8px; color: white;
+              font-weight: 800; cursor: pointer; font-size: 1rem; width: 100%; }
   .chat-whatsapp { background: #25d366; }
-  .chat-viber { background: #7360f2; }
 
   .btn-close { background: #eee; color: #333; padding: 12px; border: none;
                border-radius: 8px; width: 100%; margin-top: 12px; cursor: pointer; font-weight: 700; }
@@ -120,9 +118,9 @@
     padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;
   }
   
-  .success-icon { text-align:center; font-size: 3rem; margin-bottom: 10px; }
   .chat-link-box { background: #f0f0f0; padding: 12px; border-radius: 8px;
                    margin-top: 10px; font-size: 0.85rem; text-align: center; }
+  .chat-link-box a { color: #25d366; font-weight: 800; display: block; margin-top: 6px; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -159,14 +157,12 @@
       <div class="order-total" id="checkoutTotal"></div>
     </div>
     <div class="form-group">
-      <label>Pumili kung saan mo ipapadala ang order:</label>
+      <label>I-send ang bayad sa:</label>
       <div class="info-note" style="margin-top:8px; margin-bottom: 12px;">
-        💬 Automatic na lalabas ang chat app na may nakasulat na ang order mo. I-tap mo na lang ang <b>Send</b> sa chat.
+        💬 Magpapadala ka ng payment proof sa WhatsApp. Dito na rin tayo mag-uusap kung kailan ready for pickup.
       </div>
       <div class="chat-options">
-        <button class="chat-btn chat-messenger" onclick="submitOrder('messenger')">Messenger</button>
-        <button class="chat-btn chat-whatsapp" onclick="submitOrder('whatsapp')">WhatsApp</button>
-        <button class="chat-btn chat-viber" onclick="submitOrder('viber')">Viber</button>
+        <button class="chat-btn chat-whatsapp" onclick="submitOrder('whatsapp')">💬 Order via WhatsApp</button>
       </div>
     </div>
     <button class="btn-close" onclick="closeModal('checkoutModal')">Kanselahin</button>
@@ -176,13 +172,14 @@
 <!-- SUCCESS MODAL -->
 <div class="modal" id="successModal">
   <div class="modal-content">
-    <div class="success-icon">✅</div>
-    <h2>Nabuksan na ang Chat!</h2>
-    <p style="text-align:center; margin-bottom: 16px; color: #555; font-size: 0.95rem;">
-      Naka-type na ang order details mo. <br><b>I-tap mo na lang ang "Send" (Paper Plane) sa chat app.</b>
+    <div style="text-align:center; font-size: 3rem; margin-bottom: 10px;">✅</div>
+    <h2>Naitala na ang Order!</h2>
+    <p style="text-align:center; margin-bottom: 16px; color: #555;">
+      I-click ang link sa ibaba para i-send ang order details at proof of payment.
     </p>
-    <div class="info-note" style="margin-top:14px; text-align:center;">
-      📱 Hintayin ang reply namin sa chat para sa payment confirmation at pickup update. Salamat!
+    <div class="chat-link-box" id="chatLinkBox"></div>
+    <div class="info-note" style="margin-top:14px;">
+      📱 Hintayin ang reply namin sa chat para sa confirmation at update kung kailan ready for pickup. Salamat!
     </div>
     <button class="btn-close" onclick="closeSuccess()">OK, Sige!</button>
   </div>
@@ -191,9 +188,7 @@
 <script>
 // ============ CONFIGURATION ============
 const CONFIG = {
-  messengerUsername: "hnktakoyaki",       // 👈 Palitan ng FB page username mo
-  whatsappNumber: "639932429485",      // 👈 Palitan ng number mo
-  viberNumber: "639XXXXXXXXX",         // 👈 Palitan ng number mo
+  whatsappNumber: "639932429485",      // 👈 Palitan ng number mo (e.g., 639171234567)
 };
 
 // ============ MENU DATA ============
@@ -371,14 +366,14 @@ function submitOrder(platform) {
   const message = buildChatMessage(name, items, total);
   const link = getChatLink(platform, message);
 
-  // 🚀 AGAD-AGAD NA BUBUKSAN ANG CHAT APP
-  window.open(link, '_blank');
+  document.getElementById('chatLinkBox').innerHTML =
+    `<strong>WhatsApp</strong><br>
+     <a href="${link}" target="_blank">👉 I-click dito para mag-chat at magbayad</a>
+     <small style="color:#666; display:block; margin-top:6px;">Total: ₱${total.toFixed(2)}</small>`;
 
-  // Ipakita ang success modal
   closeModal('checkoutModal');
   document.getElementById('successModal').classList.add('active');
 
-  // Reset cart
   cart = {};
   document.getElementById('customerName').value = '';
   renderMenu();
@@ -396,9 +391,7 @@ function buildChatMessage(name, items, total) {
 
 function getChatLink(platform, message) {
   const encoded = encodeURIComponent(message);
-  if (platform === 'messenger') return `https://m.me/${CONFIG.messengerUsername}`;
   if (platform === 'whatsapp') return `https://wa.me/${CONFIG.whatsappNumber}?text=${encoded}`;
-  if (platform === 'viber') return `viber://chat?number=${CONFIG.viberNumber}`;
   return '#';
 }
 
