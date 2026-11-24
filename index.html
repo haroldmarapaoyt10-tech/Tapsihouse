@@ -18,16 +18,41 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: var(--mcdo-bg); color: var(--mcdo-dark); padding-bottom: 100px; }
   
+  /* MARQUEE HEADER */
   header {
     background: var(--mcdo-white);
-    padding: 16px; text-align: center;
+    padding: 14px 0;
     border-bottom: 4px solid var(--mcdo-yellow);
     position: sticky; top: 0; z-index: 40;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
   }
-  header h1 { font-size: 1.6rem; font-weight: 900; color: var(--mcdo-red); letter-spacing: -0.5px; }
-  header h1 span { color: var(--mcdo-dark); }
-  header p { font-size: 0.75rem; font-weight: 700; color: #666; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+  .marquee-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+  }
+  .marquee-content {
+    display: inline-block;
+    animation: marquee 10s linear infinite;
+    padding-left: 100%;
+  }
+  .marquee-content h1 {
+    display: inline-block;
+    font-size: 1.6rem; font-weight: 900; color: var(--mcdo-red); letter-spacing: -0.5px;
+    margin: 0;
+  }
+  .marquee-content h1 span { color: var(--mcdo-dark); }
+  .marquee-content p {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 700; color: #666;
+    margin: 0 0 0 24px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
@@ -88,6 +113,7 @@
   }
   .qty-btn-small:active { background: #ddd; }
   .qty-btn-small.plus { background: var(--mcdo-red); color: white; }
+  .qty-btn-small.delete { background: #ff4757; color: white; font-size: 1rem; }
   .qty-display { font-weight: 900; font-size: 1.1rem; min-width: 20px; text-align: center; }
 
   .cart-summary {
@@ -145,9 +171,16 @@
   .form-group input:focus { border-color: var(--mcdo-red); outline: none; background: white; }
 
   .order-list { background: var(--mcdo-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-  .order-list-item { display: flex; justify-content: space-between; padding: 8px 0;
-                     border-bottom: 1px dashed #ccc; font-size: 0.95rem; font-weight: 700; }
+  .order-list-item { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 12px 0; border-bottom: 1px dashed #ccc; 
+  }
   .order-list-item:last-child { border-bottom: none; }
+  .order-item-details { flex: 1; padding-right: 10px; }
+  .order-item-name { font-weight: 800; font-size: 0.95rem; color: var(--mcdo-dark); margin-bottom: 2px; }
+  .order-item-price { font-size: 0.8rem; color: #666; font-weight: 700; }
+  .order-item-controls { display: flex; align-items: center; gap: 8px; }
+  
   .order-total { font-weight: 900; font-size: 1.25rem; text-align: right; color: var(--mcdo-red); margin-top: 12px; }
 
   .chat-options { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
@@ -173,8 +206,12 @@
 <body>
 
 <header>
-  <h1>🍽️ <span>HNK</span> TAPSIHOUSE</h1>
-  <p>Eat • Enjoy • Come Again!</p>
+  <div class="marquee-wrapper">
+    <div class="marquee-content">
+      <h1>🍽️ <span>HNK</span> TAPSIHOUSE</h1>
+      <p>Eat • Enjoy • Come Again!</p>
+    </div>
+  </div>
 </header>
 
 <div class="container">
@@ -195,7 +232,6 @@
   <div class="modal-content">
     <h2 id="customizeTitle">Customize Item</h2>
     
-    <!-- SPECIAL CUSTOM UI (Pork, Chicken, Maling) -->
     <div id="specialCustomUI" style="display:none;">
       <div class="form-group">
         <label>1. Pumili ng Set:</label>
@@ -220,7 +256,6 @@
       </div>
     </div>
 
-    <!-- SIMPLE CUSTOM UI (Other Silogs) -->
     <div id="simpleCustomUI" style="display:none;">
       <div class="form-group">
         <label>May Egg ba?</label>
@@ -238,12 +273,10 @@
       </div>
     </div>
 
-    <!-- NO CUSTOM UI (Siomaisilog - Qty Only) -->
     <div id="noCustomUI" style="display:none;">
       <p style="text-align:center; color:#666; font-weight:700; margin-bottom:10px;">Pumili lang ng dami ng order.</p>
     </div>
 
-    <!-- FLAVOR CUSTOM UI (Regular Siomai) -->
     <div id="flavorCustomUI" style="display:none;">
       <div class="form-group">
         <label>Anong flavor?</label>
@@ -254,7 +287,6 @@
       </div>
     </div>
 
-    <!-- STYLE CUSTOM UI (Egg) -->
     <div id="styleCustomUI" style="display:none;">
       <div class="form-group">
         <label>Paano luto?</label>
@@ -265,7 +297,6 @@
       </div>
     </div>
 
-    <!-- QUANTITY SELECTOR (For All Custom Items) -->
     <div class="form-group" style="text-align: center; margin-top: 10px;">
       <label>Ilang Order?</label>
       <div class="qty-controls-card" style="max-width: 160px; margin: 0 auto;">
@@ -275,7 +306,6 @@
       </div>
     </div>
 
-    <!-- LIVE PRICE DISPLAY -->
     <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--mcdo-red); margin-bottom: 20px; margin-top: 10px;">
       Presyo: ₱<span id="livePrice">0</span> <span style="font-size:0.8rem; color:#666; font-weight:700;">(per order)</span>
     </div>
@@ -287,18 +317,18 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
+<!-- CHECKOUT MODAL (VIEW ORDER) -->
 <div class="modal" id="checkoutModal">
   <div class="modal-content">
-    <h2>📝 Checkout</h2>
+    <h2>📝 View Order</h2>
+    <div class="form-group">
+      <label>Ang iyong order (Pwede pa i-edit):</label>
+      <div class="order-list" id="checkoutItems"></div>
+      <div class="order-total" id="checkoutTotal"></div>
+    </div>
     <div class="form-group">
       <label>Pangalan mo:</label>
       <input type="text" id="customerName" placeholder="Juan Dela Cruz" autocomplete="name">
-    </div>
-    <div class="form-group">
-      <label>Ang iyong order:</label>
-      <div class="order-list" id="checkoutItems"></div>
-      <div class="order-total" id="checkoutTotal"></div>
     </div>
     <div class="form-group">
       <label>I-send ang bayad sa:</label>
@@ -331,7 +361,7 @@
 
 <script>
 const CONFIG = {
-  whatsappNumber: "639XXXXXXXXX", // 👈 Palitan ng number mo
+  whatsappNumber: "639932429485",
 };
 
 const MENU = {
@@ -422,7 +452,7 @@ function renderMenu() {
           html += `<div style="display: flex; justify-content: space-between; align-items: center; background: var(--mcdo-bg); padding: 8px 12px; border-radius: 12px;">
             <span style="font-size: 0.9rem; font-weight: 800;">${size.label} <span style="color:var(--mcdo-red);">₱${size.price}</span></span>
             ${qty === 0
-              ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.8rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add</button>`
+              ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.8rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add to Cart</button>`
               : `<div class="qty-controls-card">
                   <button class="qty-btn-small" onclick="changeQty('${key}', -1)">−</button>
                   <span class="qty-display">${qty}</span>
@@ -442,11 +472,11 @@ function renderMenu() {
         else if (item.styleCustom) typeStr = 'style';
 
         if (typeStr) {
-          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.basePrice}, '${typeStr}')">Customize</button>`;
+          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.basePrice}, '${typeStr}')">Add to Cart</button>`;
         } else {
           const qty = cart[item.id]?.qty || 0;
           btnHtml = qty === 0 
-            ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add</button>`
+            ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add to Cart</button>`
             : `<div class="qty-controls-card">
                 <button class="qty-btn-small" onclick="changeQty('${item.id}', -1)">−</button>
                 <span class="qty-display">${qty}</span>
@@ -467,13 +497,11 @@ function renderMenu() {
   updateCartSummary();
 }
 
-// ============ CUSTOMIZATION LOGIC ============
 function openCustomizeModal(id, name, basePrice, type) {
   pendingItem = { id, name, basePrice, type };
   modalQty = 1;
   document.getElementById('modalQtyDisplay').textContent = modalQty;
 
-  // Hide all UIs first
   ['specialCustomUI', 'simpleCustomUI', 'noCustomUI', 'flavorCustomUI', 'styleCustomUI'].forEach(uid => {
     document.getElementById(uid).style.display = 'none';
   });
@@ -545,10 +573,7 @@ function selectSimpleOption(category, value, btn) {
   const parent = btn.parentElement;
   parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (pendingItem && (pendingItem.type === 'simple' || pendingItem.type === 'flavor' || pendingItem.type === 'style')) {
-    // For simple, we update price. For flavor/style, price is static but we keep logic clean.
-    if(pendingItem.type === 'simple') updateLivePrice();
-  }
+  if (pendingItem && pendingItem.type === 'simple') updateLivePrice();
 }
 
 function changeModalQty(delta) {
@@ -564,9 +589,8 @@ function updateLivePrice() {
   const base = pendingItem.basePrice;
 
   if (pendingItem.type === 'special') {
-    if (currentOptions.set === 'kompleto') {
-      price = base; 
-    } else {
+    if (currentOptions.set === 'kompleto') price = base; 
+    else {
       let deduction = 0;
       if (currentOptions.egg === 'Walang Egg') deduction += 15;
       if (currentOptions.rice === 'Walang Rice') deduction += 15;
@@ -591,11 +615,8 @@ function confirmAddToCart() {
   let optionKey = '';
 
   if (pendingItem.type === 'special') {
-    if (currentOptions.set === 'kompleto') {
-      finalName += " (Kompleto)";
-    } else {
-      finalName += ` (${currentOptions.set_display}, ${currentOptions.egg_display}, ${currentOptions.rice_display})`;
-    }
+    if (currentOptions.set === 'kompleto') finalName += " (Kompleto)";
+    else finalName += ` (${currentOptions.set_display}, ${currentOptions.egg_display}, ${currentOptions.rice_display})`;
     optionKey = `${currentOptions.set}_${currentOptions.egg}_${currentOptions.rice}`;
   } 
   else if (pendingItem.type === 'simple') {
@@ -630,7 +651,6 @@ function confirmAddToCart() {
   renderMenu();
 }
 
-// ============ CART LOGIC ============
 function addToCart(key, name, price) {
   if (!cart[key]) cart[key] = { name, price, qty: 1, baseId: key };
   else cart[key].qty++;
@@ -649,6 +669,18 @@ function changeQty(key, delta) {
   renderMenu();
 }
 
+function editCheckoutQty(key, delta) {
+  if (!cart[key]) return;
+  if (delta === -999) {
+    delete cart[key];
+  } else {
+    cart[key].qty += delta;
+    if (cart[key].qty <= 0) delete cart[key];
+  }
+  openCheckout();
+  renderMenu();
+}
+
 function updateCartSummary() {
   const total = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
   const summary = document.getElementById('cartSummary');
@@ -660,25 +692,41 @@ function updateCartSummary() {
   }
 }
 
-// ============ CHECKOUT ============
 function openCheckout() {
   const itemsDiv = document.getElementById('checkoutItems');
   let total = 0;
-  itemsDiv.innerHTML = Object.values(cart).map(item => {
-    const subtotal = item.price * item.qty;
-    total += subtotal;
-    return `<div class="order-list-item">
-      <span>${item.name} × ${item.qty}</span>
-      <span>₱${subtotal.toLocaleString('en-PH', {minimumFractionDigits: 2})}</span>
-    </div>`;
-  }).join('');
-  document.getElementById('checkoutTotal').textContent = 'Total: ₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
+  
+  const cartEntries = Object.entries(cart);
+  if (cartEntries.length === 0) {
+    itemsDiv.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Wala pang order.</div>';
+    document.getElementById('checkoutTotal').textContent = 'Total: ₱0.00';
+  } else {
+    itemsDiv.innerHTML = cartEntries.map(([key, item]) => {
+      const subtotal = item.price * item.qty;
+      total += subtotal;
+      return `<div class="order-list-item">
+        <div class="order-item-details">
+          <div class="order-item-name">${item.name}</div>
+          <div class="order-item-price">₱${item.price} × ${item.qty} = ₱${subtotal.toFixed(2)}</div>
+        </div>
+        <div class="order-item-controls">
+          <button class="qty-btn-small" onclick="editCheckoutQty('${key}', -1)">−</button>
+          <span class="qty-display">${item.qty}</span>
+          <button class="qty-btn-small plus" onclick="editCheckoutQty('${key}', 1)">+</button>
+          <button class="qty-btn-small delete" onclick="editCheckoutQty('${key}', -999)">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('checkoutTotal').textContent = 'Total: ₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
+  }
+  
   document.getElementById('checkoutModal').classList.add('active');
 }
 
 function submitOrder(platform) {
   const name = document.getElementById('customerName').value.trim();
   if (!name) { alert('Pakilagay ang iyong pangalan!'); return; }
+  if (Object.keys(cart).length === 0) { alert('Wala nang laman ang order mo!'); return; }
 
   const items = Object.values(cart).map(item => ({
     name: item.name, price: item.price, qty: item.qty, subtotal: item.price * item.qty
