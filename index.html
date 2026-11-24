@@ -218,9 +218,6 @@
           <button class="option-btn" onclick="selectSpecialOption('rice', 'Walang Rice', 'Walang Rice', this)">Walang Rice</button>
         </div>
       </div>
-      <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--mcdo-red); margin-bottom: 20px;">
-        Presyo: ₱<span id="livePrice">90</span>
-      </div>
     </div>
 
     <!-- SIMPLE CUSTOM UI (Other Silogs) -->
@@ -228,10 +225,59 @@
       <div class="form-group">
         <label>May Egg ba?</label>
         <div class="option-group" id="simpleEggOptions">
-          <button class="option-btn active" onclick="selectSimpleOption('May Egg', this)">May Egg</button>
-          <button class="option-btn" onclick="selectSimpleOption('Walang Egg', this)">Walang Egg</button>
+          <button class="option-btn active" onclick="selectSimpleOption('egg', 'May Egg', this)">May Egg</button>
+          <button class="option-btn" onclick="selectSimpleOption('egg', 'Walang Egg', this)">Walang Egg</button>
         </div>
       </div>
+      <div class="form-group">
+        <label>May Rice ba?</label>
+        <div class="option-group" id="simpleRiceOptions">
+          <button class="option-btn active" onclick="selectSimpleOption('rice', 'May Rice', this)">May Rice</button>
+          <button class="option-btn" onclick="selectSimpleOption('rice', 'Walang Rice', this)">Walang Rice</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NO CUSTOM UI (Siomaisilog - Qty Only) -->
+    <div id="noCustomUI" style="display:none;">
+      <p style="text-align:center; color:#666; font-weight:700; margin-bottom:10px;">Pumili lang ng dami ng order.</p>
+    </div>
+
+    <!-- FLAVOR CUSTOM UI (Regular Siomai) -->
+    <div id="flavorCustomUI" style="display:none;">
+      <div class="form-group">
+        <label>Anong flavor?</label>
+        <div class="option-group" id="flavorOptions">
+          <button class="option-btn active" onclick="selectSimpleOption('flavor', 'Pork', this)">Pork</button>
+          <button class="option-btn" onclick="selectSimpleOption('flavor', 'Japanese Crabstick', this)">Japanese Crabstick</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STYLE CUSTOM UI (Egg) -->
+    <div id="styleCustomUI" style="display:none;">
+      <div class="form-group">
+        <label>Paano luto?</label>
+        <div class="option-group" id="styleOptions">
+          <button class="option-btn active" onclick="selectSimpleOption('style', 'Fried', this)">Fried</button>
+          <button class="option-btn" onclick="selectSimpleOption('style', 'Boiled', this)">Boiled</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUANTITY SELECTOR (For All Custom Items) -->
+    <div class="form-group" style="text-align: center; margin-top: 10px;">
+      <label>Ilang Order?</label>
+      <div class="qty-controls-card" style="max-width: 160px; margin: 0 auto;">
+        <button class="qty-btn-small" onclick="changeModalQty(-1)">−</button>
+        <span class="qty-display" id="modalQtyDisplay">1</span>
+        <button class="qty-btn-small plus" onclick="changeModalQty(1)">+</button>
+      </div>
+    </div>
+
+    <!-- LIVE PRICE DISPLAY -->
+    <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--mcdo-red); margin-bottom: 20px; margin-top: 10px;">
+      Presyo: ₱<span id="livePrice">0</span> <span style="font-size:0.8rem; color:#666; font-weight:700;">(per order)</span>
     </div>
 
     <div style="display:flex; gap:10px; margin-top:10px;">
@@ -290,23 +336,23 @@ const CONFIG = {
 
 const MENU = {
   "Silog Meals": [
-    { id: "porksilog", name: "Porksilog", price: 90, specialCustom: true, meatName: "Pork Lang" },
-    { id: "chicksilog", name: "Chicksilog", price: 90, specialCustom: true, meatName: "Chicken Lang" },
-    { id: "malingsilog", name: "Malingsilog (2pcs)", price: 90, specialCustom: true, meatName: "Maling Lang" },
-    { id: "tocinosilog", name: "Tocinosilog", price: 90, simpleCustom: true },
-    { id: "hotsilog", name: "Hotsilog (1pc TJ jumbo)", price: 70, simpleCustom: true },
-    { id: "siomaisilog", name: "Siomaisilog (3pcs big siomai)", price: 69, simpleCustom: true },
-    { id: "skinsilog", name: "Skinsilog (4pcs)", price: 90, simpleCustom: true },
-    { id: "longsilog", name: "Longsilog (3pcs)", price: 90, simpleCustom: true },
-    { id: "cornsilog", name: "Cornsilog", price: 90, simpleCustom: true },
-    { id: "tempurasilog", name: "Tempurasilog (2pcs)", price: 90, simpleCustom: true },
-    { id: "nuggetsilog", name: "Nuggetsilog (5pcs)", price: 90, simpleCustom: true },
-    { id: "shanghaisilog", name: "Shanghaisilog (6pcs)", price: 90, simpleCustom: true },
+    { id: "porksilog", name: "Porksilog", basePrice: 90, specialCustom: true, meatName: "Pork Lang" },
+    { id: "chicksilog", name: "Chicksilog", basePrice: 90, specialCustom: true, meatName: "Chicken Lang" },
+    { id: "malingsilog", name: "Malingsilog (2pcs)", basePrice: 90, specialCustom: true, meatName: "Maling Lang" },
+    { id: "tocinosilog", name: "Tocinosilog", basePrice: 90, simpleCustom: true },
+    { id: "hotsilog", name: "Hotsilog (1pc TJ jumbo)", basePrice: 70, simpleCustom: true },
+    { id: "siomaisilog", name: "Siomaisilog (3pcs big siomai) (Pork)", basePrice: 69, noCustom: true },
+    { id: "skinsilog", name: "Skinsilog (4pcs)", basePrice: 90, simpleCustom: true },
+    { id: "longsilog", name: "Longsilog (3pcs)", basePrice: 90, simpleCustom: true },
+    { id: "cornsilog", name: "Cornsilog", basePrice: 90, simpleCustom: true },
+    { id: "tempurasilog", name: "Tempurasilog (2pcs)", basePrice: 90, simpleCustom: true },
+    { id: "nuggetsilog", name: "Nuggetsilog (5pcs)", basePrice: 90, simpleCustom: true },
+    { id: "shanghaisilog", name: "Shanghaisilog (6pcs)", basePrice: 90, simpleCustom: true },
   ],
   "Mami at Soup": [
     { id: "beefmami", name: "Beef Mami", price: 70 },
-    { id: "siomaimami", name: "Siomai mami with 3pcs big siomai", price: 70 },
-    { id: "siomaisoup", name: "Siomai soup with 4pcs big siomai", price: 65 },
+    { id: "siomaimami", name: "Siomai mami with 3pcs big siomai (Pork)", price: 70 },
+    { id: "siomaisoup", name: "Siomai soup with 4pcs big siomai (Pork)", price: 65 },
   ],
   "Takoyaki": [
     { id: "specialcheesy", name: "Special Cheesy", desc: "Octobits, cheese, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 175 }, { label: "8 pcs", price: 145 }, { label: "5 pcs", price: 105 }] },
@@ -324,15 +370,16 @@ const MENU = {
   "Extra": [
     { id: "plainrice", name: "Plain Rice", price: 13 },
     { id: "friedrice", name: "Fried Rice", price: 18 },
-    { id: "egg", name: "Egg", price: 15 },
-    { id: "siomaibig", name: "Siomai Big", price: 12 },
-    { id: "regularsiomai", name: "Regular Siomai", price: 6 },
+    { id: "egg", name: "Egg", basePrice: 15, styleCustom: true },
+    { id: "siomaibig", name: "Siomai Big (Pork)", price: 12 },
+    { id: "regularsiomai", name: "Regular Siomai", basePrice: 6, flavorCustom: true },
   ],
 };
 
 let cart = {}; 
 let pendingItem = null;
 let currentOptions = {};
+let modalQty = 1;
 
 function renderCategoryNav() {
   const nav = document.getElementById('categoryNav');
@@ -387,10 +434,15 @@ function renderMenu() {
         html += `</div></div>`;
       } else {
         let btnHtml = '';
-        if (item.specialCustom) {
-          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.price}, true)">Customize</button>`;
-        } else if (item.simpleCustom) {
-          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.price}, false)">Customize</button>`;
+        let typeStr = '';
+        if (item.specialCustom) typeStr = 'special';
+        else if (item.simpleCustom) typeStr = 'simple';
+        else if (item.noCustom) typeStr = 'no';
+        else if (item.flavorCustom) typeStr = 'flavor';
+        else if (item.styleCustom) typeStr = 'style';
+
+        if (typeStr) {
+          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.basePrice}, '${typeStr}')">Customize</button>`;
         } else {
           const qty = cart[item.id]?.qty || 0;
           btnHtml = qty === 0 
@@ -404,7 +456,7 @@ function renderMenu() {
         
         html += `<div class="menu-card">
           <h3>${item.name}</h3>
-          <div class="price">₱${item.price}</div>
+          <div class="price">₱${item.basePrice || item.price}</div>
           ${btnHtml}
         </div>`;
       }
@@ -416,16 +468,20 @@ function renderMenu() {
 }
 
 // ============ CUSTOMIZATION LOGIC ============
-function openCustomizeModal(id, name, price, isSpecial) {
-  pendingItem = { id, name, basePrice: price, isSpecial };
-  
-  if (isSpecial) {
+function openCustomizeModal(id, name, basePrice, type) {
+  pendingItem = { id, name, basePrice, type };
+  modalQty = 1;
+  document.getElementById('modalQtyDisplay').textContent = modalQty;
+
+  // Hide all UIs first
+  ['specialCustomUI', 'simpleCustomUI', 'noCustomUI', 'flavorCustomUI', 'styleCustomUI'].forEach(uid => {
+    document.getElementById(uid).style.display = 'none';
+  });
+
+  if (type === 'special') {
     const item = Object.values(MENU).flat().find(i => i.id === id);
     document.getElementById('ulamLangBtn').textContent = item.meatName || "Ulam Lang";
     document.getElementById('specialCustomUI').style.display = 'block';
-    document.getElementById('simpleCustomUI').style.display = 'none';
-    
-    // Reset to default (Kompleto)
     currentOptions = { set: 'kompleto', set_display: 'Kompleto', egg: 'May Egg', egg_display: 'May Egg', rice: 'May Rice', rice_display: 'May Rice' };
     document.querySelectorAll('#setOptions .option-btn')[0].classList.add('active');
     document.querySelectorAll('#setOptions .option-btn')[1].classList.remove('active');
@@ -433,17 +489,35 @@ function openCustomizeModal(id, name, price, isSpecial) {
     document.querySelectorAll('#eggOptions .option-btn')[1].classList.remove('active');
     document.querySelectorAll('#riceOptions .option-btn')[0].classList.add('active');
     document.querySelectorAll('#riceOptions .option-btn')[1].classList.remove('active');
-    
     updateLivePrice();
-  } else {
-    currentOptions = { egg: 'May Egg' };
+  } 
+  else if (type === 'simple') {
     document.getElementById('simpleCustomUI').style.display = 'block';
-    document.getElementById('specialCustomUI').style.display = 'none';
-    document.querySelectorAll('#simpleEggOptions .option-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent === 'May Egg');
-    });
+    currentOptions = { egg: 'May Egg', rice: 'May Rice' };
+    document.querySelectorAll('#simpleEggOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'May Egg'));
+    document.querySelectorAll('#simpleRiceOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'May Rice'));
+    updateLivePrice();
+  } 
+  else if (type === 'no') {
+    document.getElementById('noCustomUI').style.display = 'block';
+    pendingItem.finalPrice = basePrice;
+    document.getElementById('livePrice').textContent = basePrice;
+  } 
+  else if (type === 'flavor') {
+    document.getElementById('flavorCustomUI').style.display = 'block';
+    currentOptions = { flavor: 'Pork' };
+    document.querySelectorAll('#flavorOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'Pork'));
+    pendingItem.finalPrice = basePrice;
+    document.getElementById('livePrice').textContent = basePrice;
+  } 
+  else if (type === 'style') {
+    document.getElementById('styleCustomUI').style.display = 'block';
+    currentOptions = { style: 'Fried' };
+    document.querySelectorAll('#styleOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'Fried'));
+    pendingItem.finalPrice = basePrice;
+    document.getElementById('livePrice').textContent = basePrice;
   }
-  
+
   document.getElementById('customizeTitle').textContent = `Customize: ${name}`;
   document.getElementById('customizeModal').classList.add('active');
 }
@@ -451,12 +525,10 @@ function openCustomizeModal(id, name, price, isSpecial) {
 function selectSpecialOption(category, value, displayValue, btn) {
   currentOptions[category] = value;
   currentOptions[category + '_display'] = displayValue;
-  
   const parent = btn.parentElement;
   parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
-  // If set to kompleto, force egg and rice to May
   if (category === 'set' && value === 'kompleto') {
     currentOptions.egg = 'May Egg'; currentOptions.egg_display = 'May Egg';
     currentOptions.rice = 'May Rice'; currentOptions.rice_display = 'May Rice';
@@ -468,58 +540,91 @@ function selectSpecialOption(category, value, displayValue, btn) {
   updateLivePrice();
 }
 
-function updateLivePrice() {
-  let price = pendingItem.basePrice;
-  if (currentOptions.set === 'ulam_lang') {
-    if (currentOptions.egg === 'Walang Egg' && currentOptions.rice === 'May Rice') {
-      price = 75;
-    } else if (currentOptions.egg === 'May Egg' && currentOptions.rice === 'Walang Rice') {
-      price = 75;
-    } else if (currentOptions.egg === 'Walang Egg' && currentOptions.rice === 'Walang Rice') {
-      price = 60; // Ulam lang only fallback
-    } else {
-      price = 90; // Ulam lang + may egg + may rice
-    }
-  } else {
-    price = 90; // Kompleto
-  }
-  document.getElementById('livePrice').textContent = price;
-  pendingItem.finalPrice = price;
-}
-
-function selectSimpleOption(value, btn) {
-  currentOptions.egg = value;
+function selectSimpleOption(category, value, btn) {
+  currentOptions[category] = value;
   const parent = btn.parentElement;
   parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  if (pendingItem && (pendingItem.type === 'simple' || pendingItem.type === 'flavor' || pendingItem.type === 'style')) {
+    // For simple, we update price. For flavor/style, price is static but we keep logic clean.
+    if(pendingItem.type === 'simple') updateLivePrice();
+  }
+}
+
+function changeModalQty(delta) {
+  modalQty += delta;
+  if (modalQty < 1) modalQty = 1;
+  if (modalQty > 20) modalQty = 20;
+  document.getElementById('modalQtyDisplay').textContent = modalQty;
+}
+
+function updateLivePrice() {
+  if (!pendingItem) return;
+  let price = pendingItem.basePrice;
+  const base = pendingItem.basePrice;
+
+  if (pendingItem.type === 'special') {
+    if (currentOptions.set === 'kompleto') {
+      price = base; 
+    } else {
+      let deduction = 0;
+      if (currentOptions.egg === 'Walang Egg') deduction += 15;
+      if (currentOptions.rice === 'Walang Rice') deduction += 15;
+      price = base - deduction;
+    }
+  } else if (pendingItem.type === 'simple') {
+    let deduction = 0;
+    if (currentOptions.egg === 'Walang Egg') deduction += 15;
+    if (currentOptions.rice === 'Walang Rice') deduction += 15;
+    price = base - deduction;
+  }
+
+  document.getElementById('livePrice').textContent = price;
+  pendingItem.finalPrice = price;
 }
 
 function confirmAddToCart() {
   if (!pendingItem) return;
   
   let finalName = pendingItem.name;
-  let finalPrice = pendingItem.price;
+  let finalPrice = pendingItem.finalPrice;
+  let optionKey = '';
 
-  if (pendingItem.isSpecial) {
+  if (pendingItem.type === 'special') {
     if (currentOptions.set === 'kompleto') {
       finalName += " (Kompleto)";
     } else {
       finalName += ` (${currentOptions.set_display}, ${currentOptions.egg_display}, ${currentOptions.rice_display})`;
     }
-    finalPrice = pendingItem.finalPrice;
-  } else {
-    finalName += ` (${currentOptions.egg})`;
+    optionKey = `${currentOptions.set}_${currentOptions.egg}_${currentOptions.rice}`;
+  } 
+  else if (pendingItem.type === 'simple') {
+    let opts = [];
+    if (currentOptions.egg === 'Walang Egg') opts.push('Walang Egg');
+    if (currentOptions.rice === 'Walang Rice') opts.push('Walang Rice');
+    
+    if (pendingItem.id === 'hotsilog' && currentOptions.egg === 'Walang Egg' && currentOptions.rice === 'Walang Rice') {
+      finalName += " (Hotdog Lang)";
+    } else if (opts.length > 0) {
+      finalName += ` (${opts.join(', ')})`;
+    }
+    optionKey = `${currentOptions.egg}_${currentOptions.rice}`;
+  } 
+  else if (pendingItem.type === 'flavor') {
+    finalName += ` (${currentOptions.flavor})`;
+    optionKey = currentOptions.flavor;
+  } 
+  else if (pendingItem.type === 'style') {
+    finalName += ` (${currentOptions.style})`;
+    optionKey = currentOptions.style;
   }
   
-  const safeKey = pendingItem.id + '_' + (pendingItem.isSpecial ? 
-    `${currentOptions.set}_${currentOptions.egg}_${currentOptions.rice}` : 
-    currentOptions.egg);
+  const safeKey = `${pendingItem.id}_${optionKey}`;
   
   if (!cart[safeKey]) {
-    cart[safeKey] = { name: finalName, price: finalPrice, qty: 1, baseId: pendingItem.id };
-  } else {
-    cart[safeKey].qty++;
+    cart[safeKey] = { name: finalName, price: finalPrice, qty: 0, baseId: pendingItem.id };
   }
+  cart[safeKey].qty += modalQty;
   
   closeModal('customizeModal');
   renderMenu();
