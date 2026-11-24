@@ -18,7 +18,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: var(--mcdo-bg); color: var(--mcdo-dark); padding-bottom: 100px; }
   
-  /* MARQUEE HEADER */
   header {
     background: var(--mcdo-white);
     padding: 14px 0;
@@ -297,6 +296,17 @@
       </div>
     </div>
 
+    <!-- RICE SIZE CUSTOM UI -->
+    <div id="riceSizeCustomUI" style="display:none;">
+      <div class="form-group">
+        <label>Anong laki ng rice?</label>
+        <div class="option-group" id="riceSizeOptions">
+          <button class="option-btn active" onclick="selectRiceSize('Regular', this)">Regular</button>
+          <button class="option-btn" onclick="selectRiceSize('Half', this)">Half</button>
+        </div>
+      </div>
+    </div>
+
     <div class="form-group" style="text-align: center; margin-top: 10px;">
       <label>Ilang Order?</label>
       <div class="qty-controls-card" style="max-width: 160px; margin: 0 auto;">
@@ -398,8 +408,8 @@ const MENU = {
     { id: "sprite", name: "Sprite Mismo", price: 25 },
   ],
   "Extra": [
-    { id: "plainrice", name: "Plain Rice", price: 13 },
-    { id: "friedrice", name: "Fried Rice", price: 18 },
+    { id: "plainrice", name: "Plain Rice", basePrice: 13, riceSizeCustom: true },
+    { id: "friedrice", name: "Fried Rice", basePrice: 18, riceSizeCustom: true },
     { id: "egg", name: "Egg", basePrice: 15, styleCustom: true },
     { id: "siomaibig", name: "Siomai Big (Pork)", price: 12 },
     { id: "regularsiomai", name: "Regular Siomai", basePrice: 6, flavorCustom: true },
@@ -470,6 +480,7 @@ function renderMenu() {
         else if (item.noCustom) typeStr = 'no';
         else if (item.flavorCustom) typeStr = 'flavor';
         else if (item.styleCustom) typeStr = 'style';
+        else if (item.riceSizeCustom) typeStr = 'riceSize';
 
         if (typeStr) {
           btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.basePrice}, '${typeStr}')">Add to Cart</button>`;
@@ -502,7 +513,7 @@ function openCustomizeModal(id, name, basePrice, type) {
   modalQty = 1;
   document.getElementById('modalQtyDisplay').textContent = modalQty;
 
-  ['specialCustomUI', 'simpleCustomUI', 'noCustomUI', 'flavorCustomUI', 'styleCustomUI'].forEach(uid => {
+  ['specialCustomUI', 'simpleCustomUI', 'noCustomUI', 'flavorCustomUI', 'styleCustomUI', 'riceSizeCustomUI'].forEach(uid => {
     document.getElementById(uid).style.display = 'none';
   });
 
@@ -545,6 +556,13 @@ function openCustomizeModal(id, name, basePrice, type) {
     pendingItem.finalPrice = basePrice;
     document.getElementById('livePrice').textContent = basePrice;
   }
+  else if (type === 'riceSize') {
+    document.getElementById('riceSizeCustomUI').style.display = 'block';
+    currentOptions = { riceSize: 'Regular' };
+    document.querySelectorAll('#riceSizeOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'Regular'));
+    pendingItem.finalPrice = basePrice;
+    document.getElementById('livePrice').textContent = basePrice;
+  }
 
   document.getElementById('customizeTitle').textContent = `Customize: ${name}`;
   document.getElementById('customizeModal').classList.add('active');
@@ -576,6 +594,14 @@ function selectSimpleOption(category, value, btn) {
   if (pendingItem && pendingItem.type === 'simple') updateLivePrice();
 }
 
+function selectRiceSize(size, btn) {
+  currentOptions.riceSize = size;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateLivePrice();
+}
+
 function changeModalQty(delta) {
   modalQty += delta;
   if (modalQty < 1) modalQty = 1;
@@ -601,6 +627,12 @@ function updateLivePrice() {
     if (currentOptions.egg === 'Walang Egg') deduction += 15;
     if (currentOptions.rice === 'Walang Rice') deduction += 15;
     price = base - deduction;
+  } else if (pendingItem.type === 'riceSize') {
+    if (currentOptions.riceSize === 'Half') {
+      price = pendingItem.id === 'plainrice' ? 7 : 10;
+    } else {
+      price = base;
+    }
   }
 
   document.getElementById('livePrice').textContent = price;
@@ -638,6 +670,10 @@ function confirmAddToCart() {
   else if (pendingItem.type === 'style') {
     finalName += ` (${currentOptions.style})`;
     optionKey = currentOptions.style;
+  }
+  else if (pendingItem.type === 'riceSize') {
+    finalName += ` (${currentOptions.riceSize})`;
+    optionKey = currentOptions.riceSize;
   }
   
   const safeKey = `${pendingItem.id}_${optionKey}`;
@@ -755,7 +791,7 @@ function buildChatMessage(name, items, total) {
   items.forEach(i => {
     msg += `• ${i.name} × ${i.qty} = ₱${i.subtotal.toFixed(2)}\n`;
   });
-  msg += `\n💰 TOTAL: ₱${total.toFixed(2)}\n\nMagpapadala ako ng proof of payment. Paki-confirm po at sabihin kung kailan ready for pickup. Salamat! 😊`;
+  msg += `\n💰 TOTAL: ₱${total.toFixed(2)}\n\n⚠️ Lulutuin ang order once natanggap ang payment. Ipadala dito ang proof of payment. For Gcash/Maya payment (09260467615) Dito po kami mag rereply kapag ready for pickup. Salamat! 😊`;
   return msg;
 }
 
