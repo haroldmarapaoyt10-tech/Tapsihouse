@@ -18,7 +18,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: var(--mcdo-bg); color: var(--mcdo-dark); padding-bottom: 100px; }
   
-  /* HEADER */
   header {
     background: var(--mcdo-white);
     padding: 16px; text-align: center;
@@ -32,10 +31,9 @@
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
-  /* CATEGORY NAVIGATION (Kiosk Style) */
   .category-nav {
     display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 12px 0;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
   }
   .category-nav::-webkit-scrollbar { display: none; }
   
@@ -57,7 +55,6 @@
   }
   .cat-header::before { content: ''; width: 6px; height: 24px; background: var(--mcdo-yellow); border-radius: 4px; }
 
-  /* MENU GRID */
   .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 
   .menu-card {
@@ -71,7 +68,6 @@
   .menu-card .price { color: var(--mcdo-red); font-weight: 900; font-size: 1.15rem; margin-bottom: 12px; }
   .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; font-weight: 600;}
 
-  /* BUTTONS */
   .add-btn {
     background: var(--mcdo-yellow); color: var(--mcdo-dark); border: none;
     padding: 10px; border-radius: 50px; font-weight: 900;
@@ -94,7 +90,6 @@
   .qty-btn-small.plus { background: var(--mcdo-red); color: white; }
   .qty-display { font-weight: 900; font-size: 1.1rem; min-width: 20px; text-align: center; }
 
-  /* BOTTOM CART BAR (Kiosk Style) */
   .cart-summary {
     position: fixed; bottom: 16px; left: 16px; right: 16px;
     background: var(--mcdo-dark); padding: 12px 16px; 
@@ -114,7 +109,6 @@
   }
   .btn-checkout:active { transform: translateY(4px); box-shadow: none; }
 
-  /* MODALS */
   .modal {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.7); z-index: 100;
@@ -130,9 +124,20 @@
   @media (min-width: 600px) { .modal-content { border-radius: 24px; } }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-  .modal-content h2 { margin-bottom: 20px; color: var(--mcdo-dark); font-size: 1.5rem; text-align: center; font-weight: 900; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; margin-bottom: 8px; font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark); }
+  .modal-content h2 { margin-bottom: 20px; color: var(--mcdo-dark); font-size: 1.4rem; text-align: center; font-weight: 900; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1rem; color: var(--mcdo-dark); }
+  
+  .option-group { display: flex; gap: 10px; }
+  .option-btn {
+    flex: 1; padding: 12px; border: 2px solid var(--mcdo-grey); border-radius: 12px;
+    background: var(--mcdo-white); font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .option-btn.active {
+    border-color: var(--mcdo-red); background: #FFF0F0; color: var(--mcdo-red);
+  }
+
   .form-group input {
     width: 100%; padding: 14px; border: 2px solid var(--mcdo-grey);
     border-radius: 12px; font-size: 1rem; font-weight: 600; background: var(--mcdo-bg);
@@ -173,21 +178,67 @@
 </header>
 
 <div class="container">
-  <!-- KIOSK STYLE CATEGORY NAV -->
-  <div class="category-nav" id="categoryNav">
-    <!-- Populated by JS -->
-  </div>
-
+  <div class="category-nav" id="categoryNav"></div>
   <div id="menuList"></div>
 </div>
 
-<!-- FLOATING BOTTOM CART BAR -->
 <div class="cart-summary" id="cartSummary" style="display:none;">
   <div class="total-info">
     <span class="total-label">My Order</span>
     <span class="total-amount" id="cartTotal">₱0</span>
   </div>
   <button class="btn-checkout" onclick="openCheckout()">View Order</button>
+</div>
+
+<!-- CUSTOMIZE MODAL -->
+<div class="modal" id="customizeModal">
+  <div class="modal-content">
+    <h2 id="customizeTitle">Customize Item</h2>
+    
+    <!-- SPECIAL CUSTOM UI (Pork, Chicken, Maling) -->
+    <div id="specialCustomUI" style="display:none;">
+      <div class="form-group">
+        <label>1. Pumili ng Set:</label>
+        <div class="option-group" id="setOptions">
+          <button class="option-btn active" onclick="selectSpecialOption('set', 'kompleto', 'Kompleto', this)">Kompleto</button>
+          <button class="option-btn" onclick="selectSpecialOption('set', 'ulam_lang', 'Ulam Lang', this)" id="ulamLangBtn">Ulam Lang</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>2. May Egg ba?</label>
+        <div class="option-group" id="eggOptions">
+          <button class="option-btn active" onclick="selectSpecialOption('egg', 'May Egg', 'May Egg', this)">May Egg</button>
+          <button class="option-btn" onclick="selectSpecialOption('egg', 'Walang Egg', 'Walang Egg', this)">Walang Egg</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>3. May Rice ba?</label>
+        <div class="option-group" id="riceOptions">
+          <button class="option-btn active" onclick="selectSpecialOption('rice', 'May Rice', 'May Rice', this)">May Rice</button>
+          <button class="option-btn" onclick="selectSpecialOption('rice', 'Walang Rice', 'Walang Rice', this)">Walang Rice</button>
+        </div>
+      </div>
+      <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--mcdo-red); margin-bottom: 20px;">
+        Presyo: ₱<span id="livePrice">90</span>
+      </div>
+    </div>
+
+    <!-- SIMPLE CUSTOM UI (Other Silogs) -->
+    <div id="simpleCustomUI" style="display:none;">
+      <div class="form-group">
+        <label>May Egg ba?</label>
+        <div class="option-group" id="simpleEggOptions">
+          <button class="option-btn active" onclick="selectSimpleOption('May Egg', this)">May Egg</button>
+          <button class="option-btn" onclick="selectSimpleOption('Walang Egg', this)">Walang Egg</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn-close" onclick="closeModal('customizeModal')" style="margin-top:0; flex:1;">Kanselahin</button>
+      <button class="btn-checkout" onclick="confirmAddToCart()" style="flex:2;">Add to Order</button>
+    </div>
+  </div>
 </div>
 
 <!-- CHECKOUT MODAL -->
@@ -233,26 +284,24 @@
 </div>
 
 <script>
-// ============ CONFIGURATION ============
 const CONFIG = {
-  whatsappNumber: "639932429485",      // 👈 Palitan ng number mo (e.g., 639171234567)
+  whatsappNumber: "639XXXXXXXXX", // 👈 Palitan ng number mo
 };
 
-// ============ MENU DATA ============
 const MENU = {
   "Silog Meals": [
-    { id: "porksilog", name: "Porksilog", price: 90 },
-    { id: "chicksilog", name: "Chicksilog", price: 90 },
-    { id: "malingsilog", name: "Malingsilog (2pcs)", price: 90 },
-    { id: "tocinosilog", name: "Tocinosilog", price: 90 },
-    { id: "hotsilog", name: "Hotsilog (1pc TJ jumbo)", price: 70 },
-    { id: "siomaisilog", name: "Siomaisilog (3pcs big siomai)", price: 69 },
-    { id: "skinsilog", name: "Skinsilog (4pcs)", price: 90 },
-    { id: "longsilog", name: "Longsilog (3pcs)", price: 90 },
-    { id: "cornsilog", name: "Cornsilog", price: 90 },
-    { id: "tempurasilog", name: "Tempurasilog (2pcs)", price: 90 },
-    { id: "nuggetsilog", name: "Nuggetsilog (5pcs)", price: 90 },
-    { id: "shanghaisilog", name: "Shanghaisilog (6pcs)", price: 90 },
+    { id: "porksilog", name: "Porksilog", price: 90, specialCustom: true, meatName: "Pork Lang" },
+    { id: "chicksilog", name: "Chicksilog", price: 90, specialCustom: true, meatName: "Chicken Lang" },
+    { id: "malingsilog", name: "Malingsilog (2pcs)", price: 90, specialCustom: true, meatName: "Maling Lang" },
+    { id: "tocinosilog", name: "Tocinosilog", price: 90, simpleCustom: true },
+    { id: "hotsilog", name: "Hotsilog (1pc TJ jumbo)", price: 70, simpleCustom: true },
+    { id: "siomaisilog", name: "Siomaisilog (3pcs big siomai)", price: 69, simpleCustom: true },
+    { id: "skinsilog", name: "Skinsilog (4pcs)", price: 90, simpleCustom: true },
+    { id: "longsilog", name: "Longsilog (3pcs)", price: 90, simpleCustom: true },
+    { id: "cornsilog", name: "Cornsilog", price: 90, simpleCustom: true },
+    { id: "tempurasilog", name: "Tempurasilog (2pcs)", price: 90, simpleCustom: true },
+    { id: "nuggetsilog", name: "Nuggetsilog (5pcs)", price: 90, simpleCustom: true },
+    { id: "shanghaisilog", name: "Shanghaisilog (6pcs)", price: 90, simpleCustom: true },
   ],
   "Mami at Soup": [
     { id: "beefmami", name: "Beef Mami", price: 70 },
@@ -260,31 +309,11 @@ const MENU = {
     { id: "siomaisoup", name: "Siomai soup with 4pcs big siomai", price: 65 },
   ],
   "Takoyaki": [
-    {
-      id: "specialcheesy", name: "Special Cheesy",
-      desc: "Octobits, cheese, cabbage, bonito, sauce and jap mayo",
-      sizes: [{ label: "12 pcs", price: 175 }, { label: "8 pcs", price: 145 }, { label: "5 pcs", price: 105 }]
-    },
-    {
-      id: "specialauthentic", name: "Special Authentic",
-      desc: "Octobits, cabbage, bonito, sauce and jap mayo",
-      sizes: [{ label: "12 pcs", price: 160 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 90 }]
-    },
-    {
-      id: "cheesymaru", name: "Cheesy Maru",
-      desc: "Cheese, cabbage, bonito, sauce and jap mayo",
-      sizes: [{ label: "12 pcs", price: 130 }, { label: "8 pcs", price: 110 }, { label: "5 pcs", price: 70 }]
-    },
-    {
-      id: "hamandcheese", name: "Ham and Cheese",
-      desc: "Cheese, ham, cabbage, bonito, sauce and jap mayo",
-      sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }]
-    },
-    {
-      id: "crabstick", name: "Crabstick",
-      desc: "Crabstick, cabbage, bonito, sauce and jap mayo",
-      sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }]
-    },
+    { id: "specialcheesy", name: "Special Cheesy", desc: "Octobits, cheese, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 175 }, { label: "8 pcs", price: 145 }, { label: "5 pcs", price: 105 }] },
+    { id: "specialauthentic", name: "Special Authentic", desc: "Octobits, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 160 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 90 }] },
+    { id: "cheesymaru", name: "Cheesy Maru", desc: "Cheese, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 130 }, { label: "8 pcs", price: 110 }, { label: "5 pcs", price: 70 }] },
+    { id: "hamandcheese", name: "Ham and Cheese", desc: "Cheese, ham, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }] },
+    { id: "crabstick", name: "Crabstick", desc: "Crabstick, cabbage, bonito, sauce and jap mayo", sizes: [{ label: "12 pcs", price: 150 }, { label: "8 pcs", price: 120 }, { label: "5 pcs", price: 85 }] },
   ],
   "Drinks": [
     { id: "coke", name: "Coke Mismo", price: 25 },
@@ -301,10 +330,10 @@ const MENU = {
   ],
 };
 
-// ============ STATE ============
 let cart = {}; 
+let pendingItem = null;
+let currentOptions = {};
 
-// ============ RENDER CATEGORY NAV ============
 function renderCategoryNav() {
   const nav = document.getElementById('categoryNav');
   let html = `<button class="cat-pill active" onclick="scrollToCategory('all', this)">All</button>`;
@@ -317,23 +346,16 @@ function renderCategoryNav() {
 function scrollToCategory(category, btn) {
   document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  
-  if (category === 'all') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
-
+  if (category === 'all') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const headers = document.querySelectorAll('.cat-header');
   for (const header of headers) {
     if (header.textContent.trim() === category) {
-      const y = header.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: header.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
       break;
     }
   }
 }
 
-// ============ RENDER MENU ============
 function renderMenu() {
   const list = document.getElementById('menuList');
   let html = '';
@@ -345,10 +367,8 @@ function renderMenu() {
     items.forEach(item => {
       if (item.sizes) {
         html += `<div class="menu-card" style="grid-column: span 2; text-align: left; min-height: auto;">
-          <h3>${item.name}</h3>
-          <div class="desc">${item.desc}</div>
+          <h3>${item.name}</h3><div class="desc">${item.desc}</div>
           <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">`;
-
         item.sizes.forEach(size => {
           const key = `${item.id}_${size.label}`;
           const qty = cart[key]?.qty || 0;
@@ -364,42 +384,163 @@ function renderMenu() {
             }
           </div>`;
         });
-
         html += `</div></div>`;
       } else {
-        const qty = cart[item.id]?.qty || 0;
-        html += `<div class="menu-card">
-          <h3>${item.name}</h3>
-          <div class="price">₱${item.price}</div>
-          ${qty === 0
+        let btnHtml = '';
+        if (item.specialCustom) {
+          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.price}, true)">Customize</button>`;
+        } else if (item.simpleCustom) {
+          btnHtml = `<button class="add-btn" onclick="openCustomizeModal('${item.id}', '${item.name}', ${item.price}, false)">Customize</button>`;
+        } else {
+          const qty = cart[item.id]?.qty || 0;
+          btnHtml = qty === 0 
             ? `<button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">Add</button>`
             : `<div class="qty-controls-card">
                 <button class="qty-btn-small" onclick="changeQty('${item.id}', -1)">−</button>
                 <span class="qty-display">${qty}</span>
                 <button class="qty-btn-small plus" onclick="changeQty('${item.id}', 1)">+</button>
-               </div>`
-          }
+               </div>`;
+        }
+        
+        html += `<div class="menu-card">
+          <h3>${item.name}</h3>
+          <div class="price">₱${item.price}</div>
+          ${btnHtml}
         </div>`;
       }
     });
-
     html += `</div>`;
   }
-
   list.innerHTML = html;
   updateCartSummary();
 }
 
+// ============ CUSTOMIZATION LOGIC ============
+function openCustomizeModal(id, name, price, isSpecial) {
+  pendingItem = { id, name, basePrice: price, isSpecial };
+  
+  if (isSpecial) {
+    const item = Object.values(MENU).flat().find(i => i.id === id);
+    document.getElementById('ulamLangBtn').textContent = item.meatName || "Ulam Lang";
+    document.getElementById('specialCustomUI').style.display = 'block';
+    document.getElementById('simpleCustomUI').style.display = 'none';
+    
+    // Reset to default (Kompleto)
+    currentOptions = { set: 'kompleto', set_display: 'Kompleto', egg: 'May Egg', egg_display: 'May Egg', rice: 'May Rice', rice_display: 'May Rice' };
+    document.querySelectorAll('#setOptions .option-btn')[0].classList.add('active');
+    document.querySelectorAll('#setOptions .option-btn')[1].classList.remove('active');
+    document.querySelectorAll('#eggOptions .option-btn')[0].classList.add('active');
+    document.querySelectorAll('#eggOptions .option-btn')[1].classList.remove('active');
+    document.querySelectorAll('#riceOptions .option-btn')[0].classList.add('active');
+    document.querySelectorAll('#riceOptions .option-btn')[1].classList.remove('active');
+    
+    updateLivePrice();
+  } else {
+    currentOptions = { egg: 'May Egg' };
+    document.getElementById('simpleCustomUI').style.display = 'block';
+    document.getElementById('specialCustomUI').style.display = 'none';
+    document.querySelectorAll('#simpleEggOptions .option-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === 'May Egg');
+    });
+  }
+  
+  document.getElementById('customizeTitle').textContent = `Customize: ${name}`;
+  document.getElementById('customizeModal').classList.add('active');
+}
+
+function selectSpecialOption(category, value, displayValue, btn) {
+  currentOptions[category] = value;
+  currentOptions[category + '_display'] = displayValue;
+  
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // If set to kompleto, force egg and rice to May
+  if (category === 'set' && value === 'kompleto') {
+    currentOptions.egg = 'May Egg'; currentOptions.egg_display = 'May Egg';
+    currentOptions.rice = 'May Rice'; currentOptions.rice_display = 'May Rice';
+    document.querySelectorAll('#eggOptions .option-btn')[0].classList.add('active');
+    document.querySelectorAll('#eggOptions .option-btn')[1].classList.remove('active');
+    document.querySelectorAll('#riceOptions .option-btn')[0].classList.add('active');
+    document.querySelectorAll('#riceOptions .option-btn')[1].classList.remove('active');
+  }
+  updateLivePrice();
+}
+
+function updateLivePrice() {
+  let price = pendingItem.basePrice;
+  if (currentOptions.set === 'ulam_lang') {
+    if (currentOptions.egg === 'Walang Egg' && currentOptions.rice === 'May Rice') {
+      price = 75;
+    } else if (currentOptions.egg === 'May Egg' && currentOptions.rice === 'Walang Rice') {
+      price = 75;
+    } else if (currentOptions.egg === 'Walang Egg' && currentOptions.rice === 'Walang Rice') {
+      price = 60; // Ulam lang only fallback
+    } else {
+      price = 90; // Ulam lang + may egg + may rice
+    }
+  } else {
+    price = 90; // Kompleto
+  }
+  document.getElementById('livePrice').textContent = price;
+  pendingItem.finalPrice = price;
+}
+
+function selectSimpleOption(value, btn) {
+  currentOptions.egg = value;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function confirmAddToCart() {
+  if (!pendingItem) return;
+  
+  let finalName = pendingItem.name;
+  let finalPrice = pendingItem.price;
+
+  if (pendingItem.isSpecial) {
+    if (currentOptions.set === 'kompleto') {
+      finalName += " (Kompleto)";
+    } else {
+      finalName += ` (${currentOptions.set_display}, ${currentOptions.egg_display}, ${currentOptions.rice_display})`;
+    }
+    finalPrice = pendingItem.finalPrice;
+  } else {
+    finalName += ` (${currentOptions.egg})`;
+  }
+  
+  const safeKey = pendingItem.id + '_' + (pendingItem.isSpecial ? 
+    `${currentOptions.set}_${currentOptions.egg}_${currentOptions.rice}` : 
+    currentOptions.egg);
+  
+  if (!cart[safeKey]) {
+    cart[safeKey] = { name: finalName, price: finalPrice, qty: 1, baseId: pendingItem.id };
+  } else {
+    cart[safeKey].qty++;
+  }
+  
+  closeModal('customizeModal');
+  renderMenu();
+}
+
+// ============ CART LOGIC ============
 function addToCart(key, name, price) {
-  if (!cart[key]) cart[key] = { name, price, qty: 1 };
+  if (!cart[key]) cart[key] = { name, price, qty: 1, baseId: key };
   else cart[key].qty++;
   renderMenu();
 }
 
 function changeQty(key, delta) {
-  if (!cart[key]) return;
-  cart[key].qty += delta;
-  if (cart[key].qty <= 0) delete cart[key];
+  let targetKey = key;
+  if (!cart[targetKey]) {
+    const found = Object.keys(cart).find(k => cart[k].baseId === key);
+    if (found) targetKey = found;
+  }
+  if (!cart[targetKey]) return;
+  cart[targetKey].qty += delta;
+  if (cart[targetKey].qty <= 0) delete cart[targetKey];
   renderMenu();
 }
 
@@ -418,7 +559,7 @@ function updateCartSummary() {
 function openCheckout() {
   const itemsDiv = document.getElementById('checkoutItems');
   let total = 0;
-  itemsDiv.innerHTML = Object.entries(cart).map(([key, item]) => {
+  itemsDiv.innerHTML = Object.values(cart).map(item => {
     const subtotal = item.price * item.qty;
     total += subtotal;
     return `<div class="order-list-item">
@@ -434,7 +575,7 @@ function submitOrder(platform) {
   const name = document.getElementById('customerName').value.trim();
   if (!name) { alert('Pakilagay ang iyong pangalan!'); return; }
 
-  const items = Object.entries(cart).map(([key, item]) => ({
+  const items = Object.values(cart).map(item => ({
     name: item.name, price: item.price, qty: item.qty, subtotal: item.price * item.qty
   }));
   const total = items.reduce((s, i) => s + i.subtotal, 0);
@@ -467,17 +608,15 @@ function buildChatMessage(name, items, total) {
 
 function getChatLink(platform, message) {
   const encoded = encodeURIComponent(message);
-  if (platform === 'whatsapp') return `https://wa.me/${CONFIG.whatsappNumber}?text=${encoded}`;
+  if (platform === 'whatsapp') return `https://api.whatsapp.com/send?phone=${CONFIG.whatsappNumber}&text=${encoded}`;
   return '#';
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 function closeSuccess() { closeModal('successModal'); }
 
-// ============ INIT ============
 renderCategoryNav();
 renderMenu();
 </script>
 </body>
 </html>
-
