@@ -13,6 +13,7 @@
     --kfc-white: #FFFFFF;
     --kfc-grey: #F5F5F5;
     --kfc-light-grey: #E8E8E8;
+    --kfc-yellow: #FFC72C;
     --available-green: #27AE60;
     --unavailable-grey: #999999;
   }
@@ -110,7 +111,7 @@
     padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     font-size: 0.8rem;
   }
   .store-info-bar .info-row {
@@ -119,11 +120,18 @@
     gap: 8px;
   }
   .store-info-bar .info-icon {
-    color: var(--kfc-red);
     font-size: 1rem;
   }
   .store-info-bar .info-text {
     font-weight: 500;
+  }
+  .store-info-bar .info-text a {
+    color: var(--kfc-yellow);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .store-info-bar .info-text a:hover {
+    text-decoration: underline;
   }
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
@@ -277,7 +285,7 @@
                border-radius: 4px; width: 100%; margin-top: 16px; cursor: pointer; font-weight: 700; font-size: 1rem; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
 
   .info-note {
-    background: #FFF8E1; border-left: 4px solid #FFC107;
+    background: #FFF8E1; border-left: 4px solid var(--kfc-yellow);
     padding: 12px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 16px; font-weight: 500; color: #555;
   }
   
@@ -393,6 +401,10 @@
     <div class="info-row">
       <span class="info-icon">📍</span>
       <span class="info-text"><strong>Address:</strong> 126 Almazor St. Maricaban, Pasay City</span>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📘</span>
+      <span class="info-text"><strong>Facebook Page:</strong> <a href="https://www.facebook.com/hnktakoyaki" target="_blank">facebook.com/hnktakoyaki</a></span>
     </div>
   </div>
 </header>
@@ -582,7 +594,7 @@
 <script>
 const CONFIG = {
   whatsappNumber: "639932429485",
-  adminPassword: "hnkadmin2026"
+  adminPassword: "hnkadmin2024"
 };
 
 const MENU = {
@@ -797,7 +809,6 @@ function openCustomizeModal(id, name, basePrice, type) {
   else if (type === 'flavor') {
     document.getElementById('flavorCustomUI').style.display = 'block';
     const item = Object.values(MENU).flat().find(i => i.id === id);
-    // Filter only available sub-options
     const availableOpts = (item.subOptions || []).filter(opt => isAvailable(`${id}_sub_${opt}`));
     const defaultOpt = availableOpts.length > 0 ? availableOpts[0] : 'Pork';
     currentOptions = { flavor: defaultOpt };
