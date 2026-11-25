@@ -13,6 +13,8 @@
     --mcdo-bg: #F4F4F4;
     --mcdo-white: #FFFFFF;
     --mcdo-grey: #EAEAEA;
+    --available-green: #27AE60;
+    --unavailable-red: #E74C3C;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -52,6 +54,22 @@
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
   }
+
+  .admin-login-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--mcdo-dark);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 50;
+  }
+  .admin-login-btn:hover { background: #444; }
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
@@ -200,11 +218,73 @@
   .chat-link-box { background: var(--mcdo-bg); padding: 16px; border-radius: 12px;
                    margin-top: 10px; font-size: 0.9rem; text-align: center; }
   .chat-link-box a { color: #25D366; font-weight: 900; display: block; margin-top: 8px; text-decoration: none; font-size: 1.05rem; }
+
+  /* Admin Panel Styles */
+  .admin-panel { padding: 20px; }
+  .admin-menu-item {
+    background: var(--mcdo-white);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .admin-menu-info { flex: 1; }
+  .admin-menu-name { font-weight: 800; font-size: 0.95rem; color: var(--mcdo-dark); }
+  .admin-menu-price { font-size: 0.85rem; color: #666; font-weight: 700; }
+  
+  /* Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 32px;
+    cursor: pointer;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .toggle-slider {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--unavailable-red);
+    transition: 0.3s;
+    border-radius: 32px;
+  }
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  .toggle-switch input:checked + .toggle-slider {
+    background-color: var(--available-green);
+  }
+  .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(28px);
+  }
+  .toggle-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-left: 8px;
+    min-width: 50px;
+  }
+  .toggle-label.available { color: var(--available-green); }
+  .toggle-label.unavailable { color: var(--unavailable-red); }
 </style>
 </head>
 <body>
 
 <header>
+  <button class="admin-login-btn" onclick="openLoginModal()">🔒 Admin</button>
   <div class="marquee-wrapper">
     <div class="marquee-content">
       <h1>🍽️ <span>HNK</span> TAPSIHOUSE</h1>
@@ -224,6 +304,33 @@
     <span class="total-amount" id="cartTotal">₱0</span>
   </div>
   <button class="btn-checkout" onclick="openCheckout()">View Order</button>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h2>🔒 Admin Login</h2>
+    <div class="form-group">
+      <label>Password:</label>
+      <input type="password" id="adminPassword" placeholder="Enter admin password">
+    </div>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn-close" onclick="closeModal('loginModal')" style="margin-top:0; flex:1;">Cancel</button>
+      <button class="btn-checkout" onclick="checkPassword()" style="flex:2;">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL MODAL -->
+<div class="modal" id="adminPanelModal">
+  <div class="modal-content">
+    <h2>⚙️ Admin Panel</h2>
+    <div class="info-note" style="margin-bottom: 20px;">
+      💡 I-toggle ang switch para i-set ang status ng bawat menu item. Green = Available, Red = Not Available.
+    </div>
+    <div id="adminMenuList" class="admin-panel"></div>
+    <button class="btn-close" onclick="closeModal('adminPanelModal')" style="margin-top:10px;">Close Admin Panel</button>
+  </div>
 </div>
 
 <!-- CUSTOMIZE MODAL -->
@@ -296,7 +403,6 @@
       </div>
     </div>
 
-    <!-- RICE SIZE CUSTOM UI -->
     <div id="riceSizeCustomUI" style="display:none;">
       <div class="form-group">
         <label>Anong laki ng rice?</label>
@@ -372,6 +478,7 @@
 <script>
 const CONFIG = {
   whatsappNumber: "639932429485",
+  adminPassword: "hnkadmin2026" // 👈 Palitan mo ng gusto mong password
 };
 
 const MENU = {
@@ -420,6 +527,39 @@ let cart = {};
 let pendingItem = null;
 let currentOptions = {};
 let modalQty = 1;
+let menuAvailability = JSON.parse(localStorage.getItem('hnk_menu_availability') || '{}');
+
+// Initialize all items as available if not set
+function initializeAvailability() {
+  for (const [category, items] of Object.entries(MENU)) {
+    items.forEach(item => {
+      if (item.sizes) {
+        item.sizes.forEach(size => {
+          const key = `${item.id}_${size.label}`;
+          if (!(key in menuAvailability)) {
+            menuAvailability[key] = true;
+          }
+        });
+      } else {
+        if (!(item.id in menuAvailability)) {
+          menuAvailability[item.id] = true;
+        }
+      }
+    });
+  }
+  localStorage.setItem('hnk_menu_availability', JSON.stringify(menuAvailability));
+}
+
+function isAvailable(id) {
+  return menuAvailability[id] !== false; // Default to true if not set
+}
+
+function toggleAvailability(id) {
+  menuAvailability[id] = !menuAvailability[id];
+  localStorage.setItem('hnk_menu_availability', JSON.stringify(menuAvailability));
+  renderAdminMenuList();
+  renderMenu();
+}
 
 function renderCategoryNav() {
   const nav = document.getElementById('categoryNav');
@@ -453,11 +593,15 @@ function renderMenu() {
 
     items.forEach(item => {
       if (item.sizes) {
+        const availableSizes = item.sizes.filter(size => isAvailable(`${item.id}_${size.label}`));
+        if (availableSizes.length === 0) return; // Skip if no sizes available
+        
         html += `<div class="menu-card" style="grid-column: span 2; text-align: left; min-height: auto;">
           <h3>${item.name}</h3><div class="desc">${item.desc}</div>
           <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">`;
         item.sizes.forEach(size => {
           const key = `${item.id}_${size.label}`;
+          if (!isAvailable(key)) return; // Skip unavailable sizes
           const qty = cart[key]?.qty || 0;
           html += `<div style="display: flex; justify-content: space-between; align-items: center; background: var(--mcdo-bg); padding: 8px 12px; border-radius: 12px;">
             <span style="font-size: 0.9rem; font-weight: 800;">${size.label} <span style="color:var(--mcdo-red);">₱${size.price}</span></span>
@@ -473,6 +617,8 @@ function renderMenu() {
         });
         html += `</div></div>`;
       } else {
+        if (!isAvailable(item.id)) return; // Skip unavailable items
+        
         let btnHtml = '';
         let typeStr = '';
         if (item.specialCustom) typeStr = 'special';
@@ -791,7 +937,7 @@ function buildChatMessage(name, items, total) {
   items.forEach(i => {
     msg += `• ${i.name} × ${i.qty} = ₱${i.subtotal.toFixed(2)}\n`;
   });
-  msg += `\n💰 TOTAL: ₱${total.toFixed(2)}\n\n⚠️ Lulutuin ang order once natanggap ang payment. Ipadala dito ang proof of payment. For Gcash/Maya payment (09260467615) Dito po kami mag rereply kapag ready for pickup. Salamat! 😊`;
+  msg += `\n💰 TOTAL: ₱${total.toFixed(2)}\n\n⚠️ Lulutuin ang order once natanggap ang payment. Magpapadala ako ng proof of payment. Paki-confirm po at sabihin kung kailan ready for pickup. Salamat! 😊`;
   return msg;
 }
 
@@ -801,9 +947,80 @@ function getChatLink(platform, message) {
   return '#';
 }
 
+// ============ ADMIN FUNCTIONS ============
+function openLoginModal() {
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('loginModal').classList.add('active');
+}
+
+function checkPassword() {
+  const password = document.getElementById('adminPassword').value;
+  if (password === CONFIG.adminPassword) {
+    closeModal('loginModal');
+    openAdminPanel();
+  } else {
+    alert('Mali ang password! Subukan ulit.');
+  }
+}
+
+function openAdminPanel() {
+  renderAdminMenuList();
+  document.getElementById('adminPanelModal').classList.add('active');
+}
+
+function renderAdminMenuList() {
+  const list = document.getElementById('adminMenuList');
+  let html = '';
+
+  for (const [category, items] of Object.entries(MENU)) {
+    html += `<h3 style="margin: 20px 0 10px 0; color: var(--mcdo-red); font-size: 1.1rem;">${category}</h3>`;
+    
+    items.forEach(item => {
+      if (item.sizes) {
+        item.sizes.forEach(size => {
+          const key = `${item.id}_${size.label}`;
+          const available = isAvailable(key);
+          html += `<div class="admin-menu-item">
+            <div class="admin-menu-info">
+              <div class="admin-menu-name">${item.name} - ${size.label}</div>
+              <div class="admin-menu-price">₱${size.price}</div>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <label class="toggle-switch">
+                <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${key}')">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'Available' : 'N/A'}</span>
+            </div>
+          </div>`;
+        });
+      } else {
+        const available = isAvailable(item.id);
+        html += `<div class="admin-menu-item">
+          <div class="admin-menu-info">
+            <div class="admin-menu-name">${item.name}</div>
+            <div class="admin-menu-price">₱${item.basePrice || item.price}</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <label class="toggle-switch">
+              <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${item.id}')">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'Available' : 'N/A'}</span>
+          </div>
+        </div>`;
+      }
+    });
+  }
+
+  list.innerHTML = html;
+}
+
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 function closeSuccess() { closeModal('successModal'); }
 
+// ============ INIT ============
+initializeAvailability();
 renderCategoryNav();
 renderMenu();
 </script>
