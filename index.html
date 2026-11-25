@@ -4,50 +4,98 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HNK TapsiHouse - Order</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --mcdo-red: #DA291C;
-    --mcdo-yellow: #FFC72C;
-    --mcdo-dark: #292929;
-    --mcdo-bg: #F4F4F4;
-    --mcdo-white: #FFFFFF;
-    --mcdo-grey: #EAEAEA;
+    --kfc-red: #E4002B;
+    --kfc-dark-red: #B8001F;
+    --kfc-black: #202124;
+    --kfc-white: #FFFFFF;
+    --kfc-grey: #F5F5F5;
+    --kfc-light-grey: #E8E8E8;
     --available-green: #27AE60;
-    --unavailable-red: #E74C3C;
+    --unavailable-grey: #999999;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--mcdo-bg); color: var(--mcdo-dark); padding-bottom: 100px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--kfc-grey); color: var(--kfc-black); padding-bottom: 100px; }
   
+  /* KFC-STYLE HEADER */
   header {
-    background: var(--mcdo-white);
-    padding: 14px 0;
-    border-bottom: 4px solid var(--mcdo-yellow);
+    background: var(--kfc-white);
+    border-bottom: 6px solid var(--kfc-red);
     position: sticky; top: 0; z-index: 40;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
+  .header-top {
+    background: var(--kfc-red);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    background: var(--kfc-white);
+    color: var(--kfc-red);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: 'Oswald', sans-serif;
+    border: 3px solid var(--kfc-white);
+  }
+  .logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--kfc-white);
+    letter-spacing: 1px;
+  }
+  .logo-text span { color: var(--kfc-white); font-weight: 400; font-size: 0.9rem; display: block; letter-spacing: 2px; }
+  
+  .admin-login-btn {
+    background: var(--kfc-white);
+    color: var(--kfc-red);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+  }
+  .admin-login-btn:hover { background: #f0f0f0; }
+
+  /* MARQUEE */
   .marquee-wrapper {
     overflow: hidden;
     white-space: nowrap;
     width: 100%;
+    background: var(--kfc-white);
+    padding: 8px 0;
   }
   .marquee-content {
     display: inline-block;
-    animation: marquee 10s linear infinite;
+    animation: marquee 12s linear infinite;
     padding-left: 100%;
   }
   .marquee-content h1 {
     display: inline-block;
-    font-size: 1.6rem; font-weight: 900; color: var(--mcdo-red); letter-spacing: -0.5px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem; font-weight: 700; color: var(--kfc-red); letter-spacing: 1px;
     margin: 0;
   }
-  .marquee-content h1 span { color: var(--mcdo-dark); }
   .marquee-content p {
     display: inline-block;
-    font-size: 0.75rem; font-weight: 700; color: #666;
-    margin: 0 0 0 24px;
+    font-size: 0.75rem; font-weight: 700; color: var(--kfc-black);
+    margin: 0 0 0 20px;
     text-transform: uppercase; letter-spacing: 1px;
   }
   @keyframes marquee {
@@ -55,102 +103,116 @@
     100% { transform: translateX(-100%); }
   }
 
-  .admin-login-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--mcdo-dark);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    z-index: 50;
+  /* STORE INFO BAR */
+  .store-info-bar {
+    background: var(--kfc-black);
+    color: var(--kfc-white);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
   }
-  .admin-login-btn:hover { background: #444; }
+  .store-info-bar .info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .store-info-bar .info-icon {
+    color: var(--kfc-red);
+    font-size: 1rem;
+  }
+  .store-info-bar .info-text {
+    font-weight: 500;
+  }
 
   .container { max-width: 600px; margin: 0 auto; padding: 12px; }
 
   .category-nav {
-    display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 12px 0;
+    display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px 0;
     scrollbar-width: none;
   }
   .category-nav::-webkit-scrollbar { display: none; }
   
   .cat-pill {
-    flex: 0 0 auto; padding: 10px 20px; border-radius: 50px;
-    background: var(--mcdo-white); border: 2px solid var(--mcdo-grey);
-    font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark);
+    flex: 0 0 auto; padding: 10px 18px; border-radius: 4px;
+    background: var(--kfc-white); border: 2px solid var(--kfc-light-grey);
+    font-weight: 700; font-size: 0.85rem; color: var(--kfc-black);
     cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
   .cat-pill.active {
-    background: var(--mcdo-red); color: white; border-color: var(--mcdo-red);
-    box-shadow: 0 4px 10px rgba(218, 41, 28, 0.3);
+    background: var(--kfc-red); color: var(--kfc-white); border-color: var(--kfc-red);
   }
 
   .cat-header {
-    background: var(--mcdo-dark); color: white; padding: 10px 16px; border-radius: 12px;
-    margin-top: 20px; font-weight: 900; font-size: 1.1rem; letter-spacing: 0.5px;
-    display: flex; align-items: center; gap: 8px;
+    background: var(--kfc-red); color: var(--kfc-white); padding: 12px 16px;
+    margin-top: 20px; font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 1.2rem; letter-spacing: 1px;
+    text-transform: uppercase;
+    border-left: 6px solid var(--kfc-black);
   }
-  .cat-header::before { content: ''; width: 6px; height: 24px; background: var(--mcdo-yellow); border-radius: 4px; }
 
-  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 
   .menu-card {
-    background: var(--mcdo-white); border-radius: 16px; padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--mcdo-grey);
+    background: var(--kfc-white); border-radius: 8px; padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: flex; flex-direction: column; justify-content: space-between;
     text-align: center; transition: transform 0.1s; min-height: 130px;
+    border: 1px solid var(--kfc-light-grey);
   }
   .menu-card:active { transform: scale(0.97); }
-  .menu-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 4px; color: var(--mcdo-dark); line-height: 1.2; }
-  .menu-card .price { color: var(--mcdo-red); font-weight: 900; font-size: 1.15rem; margin-bottom: 12px; }
-  .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; font-weight: 600;}
+  .menu-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--kfc-black); line-height: 1.2; }
+  .menu-card .price { color: var(--kfc-red); font-weight: 900; font-size: 1.1rem; margin-bottom: 10px; font-family: 'Oswald', sans-serif; }
+  .menu-card .desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; line-height: 1.3; min-height: 2.6em; }
 
   .add-btn {
-    background: var(--mcdo-yellow); color: var(--mcdo-dark); border: none;
-    padding: 10px; border-radius: 50px; font-weight: 900;
-    font-size: 0.9rem; cursor: pointer; width: 100%; text-transform: uppercase;
-    box-shadow: 0 4px 0 #E6B025; transition: all 0.1s;
+    background: var(--kfc-red); color: var(--kfc-white); border: none;
+    padding: 10px; border-radius: 4px; font-weight: 700;
+    font-size: 0.85rem; cursor: pointer; width: 100%; text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    transition: all 0.1s;
   }
-  .add-btn:active { transform: translateY(4px); box-shadow: none; }
+  .add-btn:active { background: var(--kfc-dark-red); }
 
   .qty-controls-card {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    background: var(--mcdo-grey); border-radius: 50px; padding: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--kfc-grey); border-radius: 4px; padding: 4px;
   }
   .qty-btn-small {
-    width: 36px; height: 36px; border-radius: 50%; border: none;
-    background: var(--mcdo-white); color: var(--mcdo-red); font-size: 1.4rem; cursor: pointer;
-    font-weight: 900; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 32px; height: 32px; border-radius: 4px; border: none;
+    background: var(--kfc-white); color: var(--kfc-red); font-size: 1.2rem; cursor: pointer;
+    font-weight: 900; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     display: flex; align-items: center; justify-content: center;
   }
   .qty-btn-small:active { background: #ddd; }
-  .qty-btn-small.plus { background: var(--mcdo-red); color: white; }
-  .qty-btn-small.delete { background: #ff4757; color: white; font-size: 1rem; }
-  .qty-display { font-weight: 900; font-size: 1.1rem; min-width: 20px; text-align: center; }
+  .qty-btn-small.plus { background: var(--kfc-red); color: var(--kfc-white); }
+  .qty-btn-small.delete { background: #ff4757; color: white; font-size: 0.9rem; }
+  .qty-display { font-weight: 900; font-size: 1rem; min-width: 20px; text-align: center; }
 
   .cart-summary {
     position: fixed; bottom: 16px; left: 16px; right: 16px;
-    background: var(--mcdo-dark); padding: 12px 16px; 
-    border-radius: 16px;
+    background: var(--kfc-red); padding: 14px 16px; 
+    border-radius: 8px;
     display: flex; justify-content: space-between; align-items: center;
     max-width: 568px; margin: 0 auto; z-index: 50;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 20px rgba(228,0,43,0.3);
   }
-  .cart-summary .total-info { display: flex; flex-direction: column; color: white; }
-  .cart-summary .total-label { font-size: 0.75rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; }
-  .cart-summary .total-amount { font-size: 1.3rem; font-weight: 900; color: var(--mcdo-yellow); }
+  .cart-summary .total-info { display: flex; flex-direction: column; color: var(--kfc-white); }
+  .cart-summary .total-label { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+  .cart-summary .total-amount { font-size: 1.3rem; font-weight: 900; font-family: 'Oswald', sans-serif; }
   .btn-checkout {
-    background: var(--mcdo-yellow); color: var(--mcdo-dark); border: none;
-    padding: 12px 24px; border-radius: 50px; font-weight: 900;
-    cursor: pointer; font-size: 1rem; text-transform: uppercase;
-    box-shadow: 0 4px 0 #E6B025;
+    background: var(--kfc-white); color: var(--kfc-red); border: none;
+    padding: 12px 24px; border-radius: 4px; font-weight: 700;
+    cursor: pointer; font-size: 0.95rem; text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
   }
-  .btn-checkout:active { transform: translateY(4px); box-shadow: none; }
+  .btn-checkout:active { background: #f0f0f0; }
 
   .modal {
     display: none; position: fixed; inset: 0;
@@ -160,107 +222,117 @@
   @media (min-width: 600px) { .modal { align-items: center; padding: 16px; } }
   .modal.active { display: flex; }
   .modal-content {
-    background: var(--mcdo-white); border-radius: 24px 24px 0 0; padding: 24px;
+    background: var(--kfc-white); border-radius: 12px 12px 0 0; padding: 24px;
     width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto;
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUp 0.3s ease;
   }
-  @media (min-width: 600px) { .modal-content { border-radius: 24px; } }
+  @media (min-width: 600px) { .modal-content { border-radius: 12px; } }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-  .modal-content h2 { margin-bottom: 20px; color: var(--mcdo-dark); font-size: 1.4rem; text-align: center; font-weight: 900; }
+  .modal-content h2 { margin-bottom: 20px; color: var(--kfc-red); font-size: 1.4rem; text-align: center; font-weight: 900; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
   .form-group { margin-bottom: 20px; }
-  .form-group label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1rem; color: var(--mcdo-dark); }
+  .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--kfc-black); text-transform: uppercase; letter-spacing: 0.5px; }
   
   .option-group { display: flex; gap: 10px; }
   .option-btn {
-    flex: 1; padding: 12px; border: 2px solid var(--mcdo-grey); border-radius: 12px;
-    background: var(--mcdo-white); font-weight: 800; font-size: 0.9rem; color: var(--mcdo-dark);
+    flex: 1; padding: 12px; border: 2px solid var(--kfc-light-grey); border-radius: 4px;
+    background: var(--kfc-white); font-weight: 700; font-size: 0.9rem; color: var(--kfc-black);
     cursor: pointer; transition: all 0.2s;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   .option-btn.active {
-    border-color: var(--mcdo-red); background: #FFF0F0; color: var(--mcdo-red);
+    border-color: var(--kfc-red); background: #FFF0F3; color: var(--kfc-red);
   }
 
   .form-group input {
-    width: 100%; padding: 14px; border: 2px solid var(--mcdo-grey);
-    border-radius: 12px; font-size: 1rem; font-weight: 600; background: var(--mcdo-bg);
+    width: 100%; padding: 14px; border: 2px solid var(--kfc-light-grey);
+    border-radius: 4px; font-size: 1rem; font-weight: 500; background: var(--kfc-grey);
   }
-  .form-group input:focus { border-color: var(--mcdo-red); outline: none; background: white; }
+  .form-group input:focus { border-color: var(--kfc-red); outline: none; background: var(--kfc-white); }
 
-  .order-list { background: var(--mcdo-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .order-list { background: var(--kfc-grey); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
   .order-list-item { 
     display: flex; justify-content: space-between; align-items: center; 
     padding: 12px 0; border-bottom: 1px dashed #ccc; 
   }
   .order-list-item:last-child { border-bottom: none; }
   .order-item-details { flex: 1; padding-right: 10px; }
-  .order-item-name { font-weight: 800; font-size: 0.95rem; color: var(--mcdo-dark); margin-bottom: 2px; }
-  .order-item-price { font-size: 0.8rem; color: #666; font-weight: 700; }
+  .order-item-name { font-weight: 700; font-size: 0.95rem; color: var(--kfc-black); margin-bottom: 2px; }
+  .order-item-price { font-size: 0.8rem; color: #666; font-weight: 500; }
   .order-item-controls { display: flex; align-items: center; gap: 8px; }
   
-  .order-total { font-weight: 900; font-size: 1.25rem; text-align: right; color: var(--mcdo-red); margin-top: 12px; }
+  .order-total { font-weight: 900; font-size: 1.25rem; text-align: right; color: var(--kfc-red); margin-top: 12px; font-family: 'Oswald', sans-serif; }
 
   .chat-options { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-  .chat-btn { padding: 16px 8px; border: none; border-radius: 50px; color: white;
-              font-weight: 900; cursor: pointer; font-size: 1.1rem; width: 100%; text-transform: uppercase;
-              box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: all 0.1s; }
-  .chat-btn:active { transform: translateY(4px); box-shadow: none; }
+  .chat-btn { padding: 16px 8px; border: none; border-radius: 4px; color: white;
+              font-weight: 700; cursor: pointer; font-size: 1rem; width: 100%; text-transform: uppercase;
+              font-family: 'Oswald', sans-serif;
+              letter-spacing: 1px;
+  }
   .chat-whatsapp { background: #25D366; }
 
-  .btn-close { background: var(--mcdo-grey); color: var(--mcdo-dark); padding: 14px; border: none;
-               border-radius: 50px; width: 100%; margin-top: 16px; cursor: pointer; font-weight: 800; font-size: 1rem; }
+  .btn-close { background: var(--kfc-light-grey); color: var(--kfc-black); padding: 14px; border: none;
+               border-radius: 4px; width: 100%; margin-top: 16px; cursor: pointer; font-weight: 700; font-size: 1rem; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
 
   .info-note {
-    background: #FFF8E1; border-left: 4px solid var(--mcdo-yellow);
-    padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; font-weight: 600; color: #555;
+    background: #FFF8E1; border-left: 4px solid #FFC107;
+    padding: 12px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 16px; font-weight: 500; color: #555;
   }
   
-  .chat-link-box { background: var(--mcdo-bg); padding: 16px; border-radius: 12px;
+  .chat-link-box { background: var(--kfc-grey); padding: 16px; border-radius: 8px;
                    margin-top: 10px; font-size: 0.9rem; text-align: center; }
   .chat-link-box a { color: #25D366; font-weight: 900; display: block; margin-top: 8px; text-decoration: none; font-size: 1.05rem; }
 
   /* Admin Panel Styles */
-  .admin-panel { padding: 20px; }
+  .admin-panel { padding: 10px; }
+  .admin-category-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    color: var(--kfc-red);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--kfc-red);
+  }
   .admin-menu-item {
-    background: var(--mcdo-white);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
+    background: var(--kfc-white);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--kfc-light-grey);
   }
   .admin-menu-info { flex: 1; }
-  .admin-menu-name { font-weight: 800; font-size: 0.95rem; color: var(--mcdo-dark); }
-  .admin-menu-price { font-size: 0.85rem; color: #666; font-weight: 700; }
+  .admin-menu-name { font-weight: 700; font-size: 0.9rem; color: var(--kfc-black); }
+  .admin-menu-price { font-size: 0.8rem; color: #666; font-weight: 500; }
   
-  /* Toggle Switch */
   .toggle-switch {
     position: relative;
-    width: 60px;
-    height: 32px;
+    width: 50px;
+    height: 26px;
     cursor: pointer;
   }
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
   .toggle-slider {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: var(--unavailable-red);
+    background-color: var(--unavailable-grey);
     transition: 0.3s;
-    border-radius: 32px;
+    border-radius: 26px;
   }
   .toggle-slider:before {
     position: absolute;
     content: "";
-    height: 24px;
-    width: 24px;
-    left: 4px;
-    bottom: 4px;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: 0.3s;
     border-radius: 50%;
@@ -269,26 +341,58 @@
     background-color: var(--available-green);
   }
   .toggle-switch input:checked + .toggle-slider:before {
-    transform: translateX(28px);
+    transform: translateX(24px);
   }
   .toggle-label {
-    font-size: 0.75rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-weight: 700;
     margin-left: 8px;
-    min-width: 50px;
+    min-width: 45px;
+    text-transform: uppercase;
   }
   .toggle-label.available { color: var(--available-green); }
-  .toggle-label.unavailable { color: var(--unavailable-red); }
+  .toggle-label.unavailable { color: var(--unavailable-grey); }
+
+  .sub-option-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--kfc-grey);
+    border-radius: 6px;
+    margin-top: 6px;
+  }
+  .sub-option-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--kfc-black);
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <button class="admin-login-btn" onclick="openLoginModal()">🔒 Admin</button>
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="logo-icon">H</div>
+      <div class="logo-text">HNK TAPSIHOUSE <span>Eat • Enjoy • Come Again!</span></div>
+    </div>
+    <button class="admin-login-btn" onclick="openLoginModal()">🔒 ADMIN</button>
+  </div>
   <div class="marquee-wrapper">
     <div class="marquee-content">
-      <h1>🍽️ <span>HNK</span> TAPSIHOUSE</h1>
-      <p>Eat • Enjoy • Come Again!</p>
+      <h1>🍽️ HNK TAPSIHOUSE — Good Food, Good Mood!</h1>
+      <p>Order Now via WhatsApp!</p>
+    </div>
+  </div>
+  <div class="store-info-bar">
+    <div class="info-row">
+      <span class="info-icon">🕐</span>
+      <span class="info-text"><strong>Store Hours:</strong> Open from Monday - Saturday 11am - 11:30pm</span>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📍</span>
+      <span class="info-text"><strong>Address:</strong> 126 Almazor St. Maricaban, Pasay City</span>
     </div>
   </div>
 </header>
@@ -326,7 +430,7 @@
   <div class="modal-content">
     <h2>⚙️ Admin Panel</h2>
     <div class="info-note" style="margin-bottom: 20px;">
-      💡 I-toggle ang switch para i-set ang status ng bawat menu item. Green = Available, Red = Not Available.
+      💡 I-toggle ang switch para i-set ang status ng bawat menu item. Green = Available, Grey = Not Available.
     </div>
     <div id="adminMenuList" class="admin-panel"></div>
     <button class="btn-close" onclick="closeModal('adminPanelModal')" style="margin-top:10px;">Close Admin Panel</button>
@@ -422,7 +526,7 @@
       </div>
     </div>
 
-    <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--mcdo-red); margin-bottom: 20px; margin-top: 10px;">
+    <div class="info-note" style="text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--kfc-red); margin-bottom: 20px; margin-top: 10px;">
       Presyo: ₱<span id="livePrice">0</span> <span style="font-size:0.8rem; color:#666; font-weight:700;">(per order)</span>
     </div>
 
@@ -433,7 +537,7 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL (VIEW ORDER) -->
+<!-- CHECKOUT MODAL -->
 <div class="modal" id="checkoutModal">
   <div class="modal-content">
     <h2>📝 View Order</h2>
@@ -478,7 +582,7 @@
 <script>
 const CONFIG = {
   whatsappNumber: "639932429485",
-  adminPassword: "hnkadmin2026" // 👈 Palitan mo ng gusto mong password
+  adminPassword: "hnkadmin2026"
 };
 
 const MENU = {
@@ -517,9 +621,9 @@ const MENU = {
   "Extra": [
     { id: "plainrice", name: "Plain Rice", basePrice: 13, riceSizeCustom: true },
     { id: "friedrice", name: "Fried Rice", basePrice: 18, riceSizeCustom: true },
-    { id: "egg", name: "Egg", basePrice: 15, styleCustom: true },
+    { id: "egg", name: "Egg", basePrice: 15, styleCustom: true, subOptions: ['Fried', 'Boiled'] },
     { id: "siomaibig", name: "Siomai Big (Pork)", price: 12 },
-    { id: "regularsiomai", name: "Regular Siomai", basePrice: 6, flavorCustom: true },
+    { id: "regularsiomai", name: "Regular Siomai", basePrice: 6, flavorCustom: true, subOptions: ['Pork', 'Japanese Crabstick'] },
   ],
 };
 
@@ -529,21 +633,23 @@ let currentOptions = {};
 let modalQty = 1;
 let menuAvailability = JSON.parse(localStorage.getItem('hnk_menu_availability') || '{}');
 
-// Initialize all items as available if not set
 function initializeAvailability() {
   for (const [category, items] of Object.entries(MENU)) {
     items.forEach(item => {
       if (item.sizes) {
         item.sizes.forEach(size => {
           const key = `${item.id}_${size.label}`;
-          if (!(key in menuAvailability)) {
-            menuAvailability[key] = true;
-          }
+          if (!(key in menuAvailability)) menuAvailability[key] = true;
         });
       } else {
-        if (!(item.id in menuAvailability)) {
-          menuAvailability[item.id] = true;
-        }
+        if (!(item.id in menuAvailability)) menuAvailability[item.id] = true;
+      }
+      // Initialize sub-options
+      if (item.subOptions) {
+        item.subOptions.forEach(opt => {
+          const subKey = `${item.id}_sub_${opt}`;
+          if (!(subKey in menuAvailability)) menuAvailability[subKey] = true;
+        });
       }
     });
   }
@@ -551,7 +657,7 @@ function initializeAvailability() {
 }
 
 function isAvailable(id) {
-  return menuAvailability[id] !== false; // Default to true if not set
+  return menuAvailability[id] !== false;
 }
 
 function toggleAvailability(id) {
@@ -588,25 +694,25 @@ function renderMenu() {
   let html = '';
 
   for (const [category, items] of Object.entries(MENU)) {
-    html += `<div class="cat-header" id="cat-${category.replace(/\s+/g, '')}">${category}</div>`;
+    html += `<div class="cat-header">${category}</div>`;
     html += `<div class="menu-grid">`;
 
     items.forEach(item => {
       if (item.sizes) {
         const availableSizes = item.sizes.filter(size => isAvailable(`${item.id}_${size.label}`));
-        if (availableSizes.length === 0) return; // Skip if no sizes available
+        if (availableSizes.length === 0) return;
         
         html += `<div class="menu-card" style="grid-column: span 2; text-align: left; min-height: auto;">
           <h3>${item.name}</h3><div class="desc">${item.desc}</div>
           <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">`;
         item.sizes.forEach(size => {
           const key = `${item.id}_${size.label}`;
-          if (!isAvailable(key)) return; // Skip unavailable sizes
+          if (!isAvailable(key)) return;
           const qty = cart[key]?.qty || 0;
-          html += `<div style="display: flex; justify-content: space-between; align-items: center; background: var(--mcdo-bg); padding: 8px 12px; border-radius: 12px;">
-            <span style="font-size: 0.9rem; font-weight: 800;">${size.label} <span style="color:var(--mcdo-red);">₱${size.price}</span></span>
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; background: var(--kfc-grey); padding: 8px 12px; border-radius: 4px;">
+            <span style="font-size: 0.9rem; font-weight: 700;">${size.label} <span style="color:var(--kfc-red);">₱${size.price}</span></span>
             ${qty === 0
-              ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.8rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add to Cart</button>`
+              ? `<button class="add-btn" style="width: auto; padding: 6px 16px; font-size: 0.75rem;" onclick="addToCart('${key}', '${item.name} (${size.label})', ${size.price})">Add to Cart</button>`
               : `<div class="qty-controls-card">
                   <button class="qty-btn-small" onclick="changeQty('${key}', -1)">−</button>
                   <span class="qty-display">${qty}</span>
@@ -617,7 +723,7 @@ function renderMenu() {
         });
         html += `</div></div>`;
       } else {
-        if (!isAvailable(item.id)) return; // Skip unavailable items
+        if (!isAvailable(item.id)) return;
         
         let btnHtml = '';
         let typeStr = '';
@@ -690,15 +796,38 @@ function openCustomizeModal(id, name, basePrice, type) {
   } 
   else if (type === 'flavor') {
     document.getElementById('flavorCustomUI').style.display = 'block';
-    currentOptions = { flavor: 'Pork' };
-    document.querySelectorAll('#flavorOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'Pork'));
+    const item = Object.values(MENU).flat().find(i => i.id === id);
+    // Filter only available sub-options
+    const availableOpts = (item.subOptions || []).filter(opt => isAvailable(`${id}_sub_${opt}`));
+    const defaultOpt = availableOpts.length > 0 ? availableOpts[0] : 'Pork';
+    currentOptions = { flavor: defaultOpt };
+    
+    let flavorHtml = '';
+    (item.subOptions || ['Pork', 'Japanese Crabstick']).forEach(opt => {
+      const available = isAvailable(`${id}_sub_${opt}`);
+      const activeClass = opt === defaultOpt ? 'active' : '';
+      const disabledStyle = available ? '' : 'opacity:0.4; pointer-events:none;';
+      flavorHtml += `<button class="option-btn ${activeClass}" style="${disabledStyle}" onclick="selectSimpleOption('flavor', '${opt}', this)">${opt}</button>`;
+    });
+    document.getElementById('flavorOptions').innerHTML = flavorHtml;
     pendingItem.finalPrice = basePrice;
     document.getElementById('livePrice').textContent = basePrice;
   } 
   else if (type === 'style') {
     document.getElementById('styleCustomUI').style.display = 'block';
-    currentOptions = { style: 'Fried' };
-    document.querySelectorAll('#styleOptions .option-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === 'Fried'));
+    const item = Object.values(MENU).flat().find(i => i.id === id);
+    const availableOpts = (item.subOptions || []).filter(opt => isAvailable(`${id}_sub_${opt}`));
+    const defaultOpt = availableOpts.length > 0 ? availableOpts[0] : 'Fried';
+    currentOptions = { style: defaultOpt };
+    
+    let styleHtml = '';
+    (item.subOptions || ['Fried', 'Boiled']).forEach(opt => {
+      const available = isAvailable(`${id}_sub_${opt}`);
+      const activeClass = opt === defaultOpt ? 'active' : '';
+      const disabledStyle = available ? '' : 'opacity:0.4; pointer-events:none;';
+      styleHtml += `<button class="option-btn ${activeClass}" style="${disabledStyle}" onclick="selectSimpleOption('style', '${opt}', this)">${opt}</button>`;
+    });
+    document.getElementById('styleOptions').innerHTML = styleHtml;
     pendingItem.finalPrice = basePrice;
     document.getElementById('livePrice').textContent = basePrice;
   }
@@ -973,7 +1102,7 @@ function renderAdminMenuList() {
   let html = '';
 
   for (const [category, items] of Object.entries(MENU)) {
-    html += `<h3 style="margin: 20px 0 10px 0; color: var(--mcdo-red); font-size: 1.1rem;">${category}</h3>`;
+    html += `<div class="admin-category-title">${category}</div>`;
     
     items.forEach(item => {
       if (item.sizes) {
@@ -990,30 +1119,55 @@ function renderAdminMenuList() {
                 <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${key}')">
                 <span class="toggle-slider"></span>
               </label>
-              <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'Available' : 'N/A'}</span>
+              <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'ON' : 'OFF'}</span>
             </div>
           </div>`;
         });
       } else {
         const available = isAvailable(item.id);
-        html += `<div class="admin-menu-item">
-          <div class="admin-menu-info">
-            <div class="admin-menu-name">${item.name}</div>
-            <div class="admin-menu-price">₱${item.basePrice || item.price}</div>
+        html += `<div class="admin-menu-item" style="flex-direction: column; align-items: stretch;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="admin-menu-info">
+              <div class="admin-menu-name">${item.name}</div>
+              <div class="admin-menu-price">₱${item.basePrice || item.price}</div>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <label class="toggle-switch">
+                <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${item.id}')">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'ON' : 'OFF'}</span>
+            </div>
           </div>
-          <div style="display: flex; align-items: center;">
-            <label class="toggle-switch">
-              <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${item.id}')">
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="toggle-label ${available ? 'available' : 'unavailable'}">${available ? 'Available' : 'N/A'}</span>
-          </div>
+          ${item.subOptions ? renderSubOptions(item) : ''}
         </div>`;
       }
     });
   }
 
   list.innerHTML = html;
+}
+
+function renderSubOptions(item) {
+  let html = '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ddd;">';
+  html += '<div style="font-size: 0.75rem; font-weight: 700; color: #666; margin-bottom: 6px; text-transform: uppercase;">Sub-options:</div>';
+  item.subOptions.forEach(opt => {
+    const subKey = `${item.id}_sub_${opt}`;
+    const available = isAvailable(subKey);
+    html += `<div class="sub-option-row">
+      <span class="sub-option-name">${opt}</span>
+      <div style="display: flex; align-items: center;">
+        <label class="toggle-switch" style="width: 44px; height: 22px;">
+          <input type="checkbox" ${available ? 'checked' : ''} onchange="toggleAvailability('${subKey}')">
+          <span class="toggle-slider" style="border-radius: 22px;"></span>
+          <span class="toggle-slider:before" style="height: 16px; width: 16px;"></span>
+        </label>
+        <span class="toggle-label ${available ? 'available' : 'unavailable'}" style="font-size: 0.65rem;">${available ? 'ON' : 'OFF'}</span>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
